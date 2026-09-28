@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HeyInsole Kids · 근거 검토</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#F1F4F1;--surface:#FFFFFF;--surface-2:#E7ECE7;--ink:#16201C;--muted:#5A6760;--line:#D3DBD5;--accent:#0E7C66;--accent-soft:#D5EDE5;
+--ok:#2E8B57;--ok-soft:#DCF0E3;--warn:#A86B12;--warn-soft:#F6EAD2;--crit:#BD3528;--crit-soft:#F7DCD8;--neu-soft:#E4E8EE;--neu:#4A5A70;
+--sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0D1311;--surface:#141C19;--surface-2:#1B2521;--ink:#E2EAE6;--muted:#95A39B;--line:#2A3530;--accent:#3DB894;--accent-soft:#173A30;
+--ok:#4DC48B;--ok-soft:#173526;--warn:#E3AA4C;--warn-soft:#3A2E17;--crit:#EF6B5C;--crit-soft:#3E1D19;--neu-soft:#1E2733;--neu:#9FB1C9}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:36px 64px}
+h1,h2,h3{text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:28px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700;margin-top:44px;margin-bottom:12px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:16px;font-weight:600;margin-top:22px;margin-bottom:6px}
+p{margin:.5em 0 .9em;max-width:70ch}
+ul,ol{max-width:70ch;padding-left:1.25em}
+li{margin:.3em 0}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.lede{font-size:16.5px;color:var(--ink);max-width:66ch}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+.verdict{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-top:22px;display:grid;gap:12px}
+.verdict .row{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:12px;align-items:start}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.s4{background:var(--ok-soft);color:var(--ok)}.s3{background:var(--accent-soft);color:var(--accent)}.s2{background:var(--warn-soft);color:var(--warn)}.s1{background:var(--crit-soft);color:var(--crit)}.s0{background:var(--neu-soft);color:var(--neu)}
+.tbl{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:none}
+sup a{font-family:var(--mono);font-size:11px;color:var(--accent);text-decoration:none}
+a{color:var(--accent)}
+.callout{border-left:4px solid var(--warn);background:var(--warn-soft);padding:12px 16px;border-radius:0 8px 8px 0;margin:14px 0;max-width:74ch}
+.callout.ok{border-color:var(--ok);background:var(--ok-soft)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.card h3{margin-top:0}
+.card.no{border-top:4px solid var(--crit)}.card.yes{border-top:4px solid var(--ok)}
+@media (max-width:680px){.two{grid-template-columns:minmax(0,1fr)}.verdict .row{grid-template-columns:minmax(0,1fr)}}
+ol.refs{font-size:13.5px;line-height:1.6}
+ol.refs li{margin:.5em 0}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.flow span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13.5px}
+.flow b{color:var(--muted);font-weight:400}
+.note{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="eyebrow">HeyInsole Kids · 근거 검토 자료</div>
+<h1>보행 모니터링은 아이 성장에 어떻게 도움이 되는가</h1>
+<p class="meta">작성 2026-09-28 · 대상: 제품 기획·산학 제안·마케팅 문구 검토 · 의학적 진단 자료가 아님</p>
+
+<p class="lede">바른 걸음을 교정하면 키가 더 큰다는 직접 근거는 현재 없습니다. 근거가 탄탄한 것은 그 주변입니다. 체중을 싣는 걷기·뛰기 활동은 아동기 뼈 형성을 돕고, 보행 이상을 일찍 찾아내면 필요한 아이는 제때 진료로 이어집니다. 반대로 대부분 자연히 좋아지는 패턴에 불필요한 교정 치료를 하지 않게 해 줍니다. 인솔 보행 모니터링의 가치는 이 세 가지를 연령에 맞는 기준으로, 매일, 집에서 측정한다는 데 있습니다.</p>
+
+<div class="verdict">
+  <div class="row"><span class="pill s4">근거 강함</span><div>걷기·뛰기 같은 체중부하 활동은 성장기 골량(뼈 무기질) 증가에 도움이 되며, 사춘기 이전·초기에 효과가 가장 큽니다.<sup><a href="#r1">1</a>,<a href="#r2">2</a>,<a href="#r3">3</a>,<a href="#r4">4</a></sup></div></div>
+  <div class="row"><span class="pill s3">근거 중간</span><div>발끝 보행, 8세 이후 지속되는 안짱걸음, 뚜렷한 좌우 비대칭은 진료가 필요한 아이를 가려내는 선별 신호입니다.<sup><a href="#r7">7</a>,<a href="#r8">8</a>,<a href="#r9">9</a>,<a href="#r10">10</a></sup></div></div>
+  <div class="row"><span class="pill s3">근거 중간</span><div>과체중 아동은 발바닥 중족부·전족부 하중이 커지고 평발 경향이 있어, 체중 관리와 발 부하 관리를 함께 봐야 합니다.<sup><a href="#r13">13</a>,<a href="#r14">14</a></sup></div></div>
+  <div class="row"><span class="pill s2">근거 제한</span><div>운동 직후 성장호르몬이 일시적으로 오르는 것은 확인되지만, 이것이 최종 키를 늘린다는 연구는 없습니다.<sup><a href="#r5">5</a>,<a href="#r6">6</a>,<a href="#r17">17</a></sup></div></div>
+  <div class="row"><span class="pill s1">근거 없음</span><div>교정 인솔·신발로 걸음을 고치면 키가 큰다는 주장. 무증상 유연성 평발에 대한 교정 인솔의 효과조차 근거 수준이 매우 낮습니다.<sup><a href="#r11">11</a></sup></div></div>
+</div>
+
+<h2>1. 키 성장과 걸음의 관계: 무엇이 확인되었나</h2>
+<h3>키(선형 성장)는 운동량으로 크게 바뀌지 않는다</h3>
+<p>Malina는 운동·훈련 연구를 종합해, 규칙적인 신체활동이 키, 성장 속도, 사춘기 최대 성장 시기에 뚜렷한 영향을 주지 않는다고 결론 내렸습니다.<sup><a href="#r5">5</a></sup> Rogol 등도 적당한 운동은 성장에 해가 없지만 키를 더 키우지도 않으며, 에너지 섭취가 부족한 고강도 훈련은 오히려 사춘기를 늦출 수 있다고 정리했습니다.<sup><a href="#r6">6</a></sup> 키를 결정하는 주요인은 유전(부모 키), 영양, 수면, 내분비 상태입니다.</p>
+<h3>그러나 뼈의 질(골량·골강도)은 운동에 반응한다</h3>
+<p>통제 연구 리뷰와 메타분석은 점프·달리기 같은 체중부하 운동이 아동·청소년의 골무기질량과 골밀도를 유의하게 높인다고 보고합니다. 효과는 사춘기 이전·초기에 가장 큽니다.<sup><a href="#r2">2</a>,<a href="#r3">3</a>,<a href="#r4">4</a></sup> 이 시기에 쌓은 골량은 성인기 최대골량의 바탕이 됩니다. WHO 2020 지침이 5~17세에게 하루 평균 60분 이상 중고강도 활동과 주 3일 이상 뼈·근육 강화 활동을 권고하는 근거도 여기에 포함됩니다.<sup><a href="#r1">1</a></sup></p>
+<h3>성장호르몬은 운동에 반응하지만, 최종 키 효과는 입증되지 않았다</h3>
+<p>고강도 인터벌 운동 직후 아이의 성장호르몬이 상승하는 것은 확인되었습니다.<sup><a href="#r17">17</a></sup> 다만 이것은 일시적 반응이며, 반복 운동으로 최종 키가 커졌다는 종단 연구는 없습니다.<sup><a href="#r5">5</a>,<a href="#r6">6</a></sup></p>
+
+<div class="callout"><b>정리.</b> "바른 걸음 → 키 성장"은 과학적으로 연결되지 않습니다. "충분히 걷고 뛰는 아이 → 튼튼한 뼈와 건강한 체중 → 성장에 좋은 조건"은 근거가 있습니다. 걸음을 측정하는 제품은 후자를 도울 수 있습니다.</div>
+
+<h2>2. 보행 모니터링이 실제로 기여할 수 있는 네 가지</h2>
+
+<h3>① 활동량을 매일, 객관적으로 잰다</h3>
+<p>인솔은 걸음 수뿐 아니라 분당 걸음수로 활동 강도를 구분할 수 있어, WHO 권고(하루 60분 중고강도) 달성 여부를 부모가 설문이 아닌 측정값으로 확인할 수 있습니다.<sup><a href="#r1">1</a></sup> 체중부하 활동과 골 건강의 연관은 근거가 가장 강한 부분입니다.<sup><a href="#r2">2</a>,<a href="#r3">3</a></sup></p>
+
+<h3>② 진료가 필요한 보행을 일찍 가려낸다</h3>
+<ul>
+<li><b>발끝 보행.</b> 스웨덴 5.5세 코호트에서 발끝 보행을 계속하는 아이는 약 2%였고, 신경발달 진단이 있는 아이에서 훨씬 흔했습니다.<sup><a href="#r7">7</a></sup> 같은 연구진의 추적에서는 특발성 발끝 보행 대부분이 10세 전에 없어졌습니다.<sup><a href="#r8">8</a></sup> 그래서 "지속되는지"를 반복 측정으로 확인하는 것이 핵심입니다. 인솔은 뒤꿈치 하중 비율과 초기 접지 부위로 이를 매일 기록할 수 있습니다.</li>
+<li><b>안짱걸음.</b> 대퇴골 전염·경골 염전에 의한 안짱걸음은 대부분 8~10세 전후 자연 교정되며, 교정 신발·보조기는 효과가 없습니다.<sup><a href="#r9">9</a>,<a href="#r10">10</a></sup> 발진행각을 각도로 추적하면 좋아지는 추세인지, 8세 이후에도 남는지를 구분할 수 있습니다.</li>
+<li><b>신경발달 관련 보행 차이.</b> 자폐스펙트럼 아동에서 보행 차이가 여러 연구로 보고되었습니다.<sup><a href="#r16">16</a></sup> 인솔은 진단 도구가 아니지만, 발끝 보행·리듬 변동이 함께 보이면 발달 평가를 권하는 계기가 될 수 있습니다.</li>
+<li><b>좌우 비대칭.</b> 다친 뒤 한쪽을 아끼는 보상 보행을 부모가 모르고 지나치기 쉽습니다. 좌우 대칭 지수가 몇 주 이상 높게 유지되면 진료를 권할 근거가 됩니다.</li>
+</ul>
+
+<h3>③ 불필요한 교정 치료를 줄인다</h3>
+<p>3~6세 아이의 상당수가 평발로 보이며, 나이가 들수록 비율이 줄어듭니다(생리적 평발).<sup><a href="#r12">12</a></sup> Cochrane 리뷰(16개 시험, 1,058명)는 통증 없는 유연성 평발에 맞춤 교정 인솔을 쓸 근거가 없다고 결론 내렸습니다.<sup><a href="#r11">11</a></sup> 연령별 기준으로 "지금은 정상 발달 범위"라고 보여 주는 것만으로도 비싼 교정 용품 구매나 불필요한 걱정을 줄일 수 있습니다.</p>
+
+<h3>④ 체중·발 크기 변화를 성장 기록과 함께 본다</h3>
+<p>과체중 아동은 중족부·전족부 하중과 접촉 면적이 커지고 발이 평평해지는 경향이 있습니다.<sup><a href="#r13">13</a>,<a href="#r14">14</a></sup> 성장도표(2017 소아청소년 성장도표)<sup><a href="#r15">15</a></sup> 기반 BMI 백분위와 발바닥 하중을 같이 보면, 체중 관리가 발 건강에도 이어진다는 점을 부모에게 수치로 설명할 수 있습니다. 발 길이를 함께 기록하면 작은 신발로 인한 발가락 압박도 막을 수 있습니다.</p>
+
+<h2>3. 알고리즘 기능과 근거 연결표</h2>
+<div class="tbl"><table>
+<tr><th>v2 기능</th><th>무엇을 재나</th><th>연결되는 근거</th><th>근거 수준</th></tr>
+<tr><td>일일 걸음·활동 강도</td><td>걸음 수, 분당 걸음수로 중고강도 시간 추정</td><td>체중부하 활동과 골량 증가, WHO 권고<sup><a href="#r1">1</a>–<a href="#r4">4</a></sup></td><td><span class="pill s4">강함</span></td></tr>
+<tr><td>연령별 보행 표준 (3~17세)</td><td>분당 걸음수·보폭/키·변동계수를 나이별로 비교</td><td>보행은 나이에 따라 성숙하며, 보폭 변동성은 7세 이후에도 계속 감소<sup><a href="#r18">18</a>,<a href="#r19">19</a></sup></td><td><span class="pill s3">중간</span></td></tr>
+<tr><td>발끝 보행 감지</td><td>뒤꿈치 하중 비율, 앞발 초기 접지 비율</td><td>유병률·자연경과·신경발달 연관<sup><a href="#r7">7</a>,<a href="#r8">8</a></sup></td><td><span class="pill s3">중간</span></td></tr>
+<tr><td>발진행각 (°)</td><td>안짱/팔자 방향과 각도 추세</td><td>대부분 자연 교정, 보조기 무효<sup><a href="#r9">9</a>,<a href="#r10">10</a></sup></td><td><span class="pill s3">중간</span></td></tr>
+<tr><td>중족부 하중 (평발 지표)</td><td>연령 상한 대비 아치부 하중</td><td>생리적 평발의 연령 경과, 무증상 평발 교정 인솔 근거 부족<sup><a href="#r11">11</a>,<a href="#r12">12</a></sup></td><td><span class="pill s3">중간</span></td></tr>
+<tr><td>BMI·하중 연계</td><td>체중 백분위와 발바닥 압력 분포</td><td>과체중과 발바닥 압력·평발 연관<sup><a href="#r13">13</a>,<a href="#r14">14</a></sup></td><td><span class="pill s3">중간</span></td></tr>
+<tr><td>좌우 대칭 지수</td><td>보폭·입각 시간 차이</td><td>아동 대상 기준값 연구는 제한적. 성인·재활 문헌 차용</td><td><span class="pill s2">제한</span></td></tr>
+<tr><td>인솔 측정 정확도</td><td>IMU+FSR 보폭·속도 추정</td><td>아동 대상 웨어러블 관성센서는 시공간 변수에서 대체로 양호하나 기기·알고리즘마다 차이<sup><a href="#r20">20</a>,<a href="#r21">21</a></sup></td><td><span class="pill s2">자체 검증 필요</span></td></tr>
+<tr><td>키 성장 촉진</td><td>—</td><td>직접 근거 없음<sup><a href="#r5">5</a>,<a href="#r6">6</a></sup></td><td><span class="pill s1">없음</span></td></tr>
+</table></div>
+
+<h2>4. 대외 문구: 쓸 수 있는 표현과 피해야 할 표현</h2>
+<div class="two">
+  <div class="card yes"><h3>근거로 뒷받침되는 표현</h3>
+  <ul>
+    <li>"아이의 걷기·뛰기 활동량을 매일 측정합니다"</li>
+    <li>"연령별 기준으로 보행 발달을 확인합니다"</li>
+    <li>"발끝 걷기·안짱걸음이 계속되는지 추적해 진료가 필요한 시점을 알려 드립니다"</li>
+    <li>"성장기 뼈 건강에 도움이 되는 활동 습관을 만듭니다"</li>
+    <li>"키·체중·발 크기 변화를 한 곳에 기록합니다"</li>
+  </ul></div>
+  <div class="card no"><h3>근거가 없어 피해야 할 표현</h3>
+  <ul>
+    <li>"바른 걸음으로 키가 커집니다" / "키 성장 인솔"</li>
+    <li>"성장판을 자극합니다"</li>
+    <li>"평발·안짱걸음을 교정합니다" (측정 제품이 치료 효과를 주장하는 경우)</li>
+    <li>"자폐·발달장애를 진단합니다"</li>
+    <li>"성장호르몬 분비를 늘립니다"</li>
+  </ul></div>
+</div>
+<p class="note">질병 진단·치료 효과를 표방하면 의료기기 허가와 광고 사전심의 대상이 될 수 있습니다. 문구 확정 전에 식약처 기준과 전문가 검토를 받으시길 권합니다. 이 자료는 법률 자문이 아닙니다.</p>
+
+<h2>5. 자체 근거를 만드는 연구 제안</h2>
+<p>현재 문헌만으로는 "HeyInsole이 아이 건강에 도움이 된다"를 직접 말하기 어렵습니다. 아래 세 단계 연구를 산학 과제(예: 홍익대 세종 RISE)로 진행하면 제품 고유의 근거가 생깁니다.</p>
+<div class="flow"><span>1단계 타당도</span><b>→</b><span>2단계 선별 정확도</span><b>→</b><span>3단계 효과</span></div>
+<div class="tbl"><table>
+<tr><th>단계</th><th>설계</th><th>핵심 지표</th><th>규모·기간(안)</th></tr>
+<tr><td>1. 측정 타당도</td><td>3~12세 아동이 HeyInsole과 기준 장비(압력 보행판 또는 광학식 동작분석)를 동시에 착용하고 걷기</td><td>보폭·속도·분당걸음수 일치도(ICC, Bland-Altman), 발진행각 오차</td><td>40~60명, 3개월</td></tr>
+<tr><td>2. 선별 정확도</td><td>소아정형외과 외래 아동에서 인솔 플래그(발끝 보행·안짱걸음·비대칭)와 전문의 진단 비교</td><td>민감도·특이도, 불필요 의뢰 비율</td><td>100~150명, 6개월</td></tr>
+<tr><td>3. 효과 (활동·뼈)</td><td>6~11세 무작위 배정: 인솔 피드백+부모 앱 vs 인솔만 착용(피드백 없음)</td><td>일일 중고강도 활동 시간, 발뒤꿈치 초음파 골강도, BMI z, 성장속도(부차)</td><td>120명, 12개월</td></tr>
+</table></div>
+<p class="note">3단계에서 키는 부차 지표로만 두는 것을 권합니다. 1년 연구로 키 차이를 보여 주기 어렵고, 1차 목표로 걸면 결과 해석이 불리해집니다.</p>
+
+<h2>참고문헌</h2>
+<ol class="refs">
+<li id="r1">Chaput JP, et al. 2020 WHO guidelines on physical activity and sedentary behaviour for children and adolescents aged 5–17 years: summary of the evidence. <i>Int J Behav Nutr Phys Act</i>. 2020;17:141. <a href="https://link.springer.com/article/10.1186/s12966-020-01037-z">링크</a></li>
+<li id="r2">Hind K, Burrows M. Weight-bearing exercise and bone mineral accrual in children and adolescents: a review of controlled trials. <i>Bone</i>. 2007;40(1):14–27. <a href="https://pubmed.ncbi.nlm.nih.gov/16956802/">PubMed</a></li>
+<li id="r3">Behringer M, et al. Effects of weight-bearing activities on bone mineral content and density in children and adolescents: a meta-analysis. <i>J Bone Miner Res</i>. 2014;29(2):467–478. <a href="https://pubmed.ncbi.nlm.nih.gov/23857721/">PubMed</a></li>
+<li id="r4">Tan VP, et al. Influence of physical activity on bone strength in children and adolescents: a systematic review and narrative synthesis. <i>J Bone Miner Res</i>. 2014;29(10):2161–2181. <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.2254">링크</a></li>
+<li id="r5">Malina RM. Physical activity and training: effects on stature and the adolescent growth spurt. <i>Med Sci Sports Exerc</i>. 1994;26(6):759–766. <a href="https://pubmed.ncbi.nlm.nih.gov/8052116/">PubMed</a></li>
+<li id="r6">Rogol AD, Clark PA, Roemmich JN. Growth and pubertal development in children and adolescents: effects of diet and physical activity. <i>Am J Clin Nutr</i>. 2000;72(2 Suppl):521S–528S. <a href="https://ajcn.nutrition.org/article/S0002-9165(23)06730-8/fulltext">링크</a></li>
+<li id="r7">Engström P, Tedroff K. The prevalence and course of idiopathic toe-walking in 5-year-old children. <i>Pediatrics</i>. 2012;130(2):279–284. <a href="https://publications.aap.org/pediatrics/article-pdf/130/2/279/1089511/peds_2012-0225.pdf">링크</a></li>
+<li id="r8">Engström P, Tedroff K. Idiopathic toe-walking: prevalence and natural history from birth to ten years of age. <i>J Bone Joint Surg Am</i>. 2018;100(8):640–647. <a href="https://www.jbjs.org/reader.php?rsuite_id=1636057">링크</a></li>
+<li id="r9">Staheli LT, et al. Lower-extremity rotational problems in children: normal values to guide management. <i>J Bone Joint Surg Am</i>. 1985;67(1):39–47.</li>
+<li id="r10">Sass P, Hassan G. Lower extremity abnormalities in children. <i>Am Fam Physician</i>. 2003;68(3):461–468. <a href="https://www.aafp.org/afp/2003/0801/p461">링크</a></li>
+<li id="r11">Evans AM, et al. Foot orthoses for treating paediatric flat feet. <i>Cochrane Database Syst Rev</i>. 2022;CD006311.pub3. <a href="https://www.cochrane.org/evidence/CD006311_foot-orthoses-treating-flat-feet-children">요약</a> · <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006311.pub3/full">전문</a></li>
+<li id="r12">Pfeiffer M, et al. Prevalence of flat foot in preschool-aged children. <i>Pediatrics</i>. 2006;118(2):634–639.</li>
+<li id="r13">The impact of overweight and obesity on plantar pressure in children and adolescents: a systematic review. <i>Int J Environ Res Public Health</i>. 2020;17(18):6600. <a href="https://www.mdpi.com/1660-4601/17/18/6600">링크</a></li>
+<li id="r14">Influence of obesity on foot loading characteristics in gait for children aged 1 to 12 years. <i>PLoS One</i>. 2016. <a href="https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0149924">링크</a></li>
+<li id="r15">Kim JH, et al. The 2017 Korean National Growth Charts for children and adolescents: development, improvement, and prospects. <i>Korean J Pediatr</i>. 2018;61(5):135–149. <a href="https://www.e-cep.org/journal/view.php?doi=10.3345%2Fkjp.2018.61.5.135">링크</a></li>
+<li id="r16">Kindregan D, Gallagher L, Gormley J. Gait deviations in children with autism spectrum disorders: a review. <i>Autism Res Treat</i>. 2015;2015:741480. <a href="https://onlinelibrary.wiley.com/doi/10.1155/2015/741480">링크</a></li>
+<li id="r17">High-intensity interval exercise test stimulates growth hormone secretion in children. <i>Growth Horm IGF Res</i>. 2021. <a href="https://www.sciencedirect.com/science/article/abs/pii/S1096637421000113">링크</a></li>
+<li id="r18">Hausdorff JM, et al. Maturation of gait dynamics: stride-to-stride variability and its temporal organization in children. <i>J Appl Physiol</i>. 1999;86(3):1040–1047.</li>
+<li id="r19">Sutherland DH, et al. The development of mature gait. <i>J Bone Joint Surg Am</i>. 1980;62(3):336–353.</li>
+<li id="r20">Use of wearable inertial sensors for the assessment of spatiotemporal gait variables in children: a systematic review. <i>Motriz</i>. <a href="http://www.scielo.br/j/motriz/a/4dB8ZDfkTcwNNhL4KkRJGgc/?lang=en">링크</a></li>
+<li id="r21">Validation of body-worn sensors for gait analysis during a 2-min walk test in children. 2023. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10398795/">PMC</a></li>
+</ol>
+<p class="note">일부 원문(PubMed·PMC)은 이번 작업 환경에서 열람이 차단되어 초록 수치를 직접 재확인하지 못했습니다. 인용 수치는 널리 인용된 값 위주로 적었으며, 제안서에 쓰기 전 원문 대조를 권합니다. 저자명이 비어 있는 문헌은 제목·학술지로 표기했습니다.</p>
+</div>
+</body>
+</html>

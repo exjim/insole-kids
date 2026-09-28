@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="HeyInsole Kids — 스마트 인솔 걸음 데이터로 아이의 보행·운동 발달·성장을 또래 기준과 비교해 보여주는 모니터링 웹앱 (NEWDIC)">
+<meta name="theme-color" content="#0E7C66">
+<meta property="og:title" content="HeyInsole Kids">
+<meta property="og:description" content="걸음으로 보는 아이 발달·성장 모니터링 · HeyInsole by NEWDIC">
+<meta property="og:type" content="website">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>HeyInsole Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F1F4F1;--surface:#FFFFFF;--surface-2:#E7ECE7;--ink:#16201C;--muted:#5A6760;--line:#D3DBD5;
+  --accent:#0E7C66;--accent-soft:#D5EDE5;--left:#2D6CB5;--right:#CF5F2D;
+  --ok:#2E8B57;--ok-soft:#DCF0E3;--warn:#A86B12;--warn-soft:#F6EAD2;--crit:#BD3528;--crit-soft:#F7DCD8;
+  --band:#0E7C6614;--band2:#0E7C6626;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --bg:#0D1311;--surface:#141C19;--surface-2:#1B2521;--ink:#E2EAE6;--muted:#95A39B;--line:#2A3530;
+  --accent:#3DB894;--accent-soft:#173A30;--left:#72A6E8;--right:#F08C5C;
+  --ok:#4DC48B;--ok-soft:#173526;--warn:#E3AA4C;--warn-soft:#3A2E17;--crit:#EF6B5C;--crit-soft:#3E1D19;
+  --band:#3DB89414;--band2:#3DB89430;}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#0D1311;--surface:#141C19;--surface-2:#1B2521;--ink:#E2EAE6;--muted:#95A39B;--line:#2A3530;
+  --accent:#3DB894;--accent-soft:#173A30;--left:#72A6E8;--right:#F08C5C;
+  --ok:#4DC48B;--ok-soft:#173526;--warn:#E3AA4C;--warn-soft:#3A2E17;--crit:#EF6B5C;--crit-soft:#3E1D19;
+  --band:#3DB89414;--band2:#3DB89430;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:17px;font-weight:700}
+h3{font-size:14px;font-weight:600}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.eyebrow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.brand{display:flex;gap:12px;align-items:center}
+.brand svg{flex:none}
+.specline{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;margin-block:14px;scrollbar-width:none}
+nav.tabs button{font:inherit;font-weight:600;background:transparent;border:1px solid transparent;color:var(--muted);padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{background:var(--surface);border-color:var(--line);color:var(--ink)}
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kids{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.kid{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.kid[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.kid .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--accent-soft);color:var(--accent)}
+.kid .nm{font-weight:600}
+.kid .sub{font-size:11.5px;color:var(--muted)}
+.kid.add{border-style:dashed;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g-hero{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+@media (max-width:880px){.g2,.g3,.g-hero{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.panel>h2,.panel>h3{margin-bottom:10px}
+.phead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.score-wrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:132px;height:132px;flex:none}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .v b{font-family:var(--mono);font-size:34px;font-weight:600;display:block;line-height:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.crit{background:var(--crit-soft);color:var(--crit)}.pill.neu{background:var(--surface-2);color:var(--muted)}
+.dom{display:grid;grid-template-columns:5.2em minmax(0,1fr) 3.2em;gap:8px 10px;align-items:center}
+.bar{height:8px;background:var(--surface-2);border-radius:4px;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:4px}
+.flags{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.flag{display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;align-items:stretch}
+.flag .s{border-radius:2px}
+.flag p{margin:0}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+td.r,th.r{text-align:right}
+td.num,th.r{white-space:nowrap}
+.tbl{overflow-x:auto}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kv div{background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.kv b{display:block;font-family:var(--mono);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.kv span{font-size:11.5px;color:var(--muted)}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:8px;cursor:pointer}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.dan{border-color:var(--crit);color:var(--crit)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+canvas{width:100%;display:block}
+svg text{font-family:var(--sans)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.log{font-family:var(--mono);font-size:12px;max-height:210px;overflow:auto;background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.log div{padding:2px 0;border-bottom:1px dashed var(--line)}
+.alert{border:1px solid var(--crit);background:var(--crit-soft);color:var(--crit);border-radius:10px;padding:10px 14px;font-weight:600}
+.prose{max-width:72ch}
+.prose p{margin:.4em 0 .8em}
+.prose ul{margin:.3em 0 .9em;padding-left:1.2em}
+.prose li{margin:.25em 0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+.stage{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stage div{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px}
+.stage div.on{border-color:var(--crit);background:var(--crit-soft)}
+.stage div b{display:block;font-size:12.5px}
+@media (max-width:600px){.stage{grid-template-columns:repeat(2,minmax(0,1fr))}}
+form.addkid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+form.addkid label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+form.addkid input,form.addkid select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.note{font-size:12px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;margin-top:10px}
+.cmp td:nth-child(2){color:var(--muted)}
+.win{color:var(--ok);font-weight:600}
+pre.mermaid{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;overflow-x:auto}
+
+.brand .by{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em}
+.chip{font:inherit;font-size:11.5px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:999px;padding:1px 8px;cursor:pointer}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center}
+.dcard{display:flex;flex-direction:column;gap:10px}
+.dcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.dcard .sc{font-family:var(--mono);font-size:32px;font-weight:600;line-height:1}
+.dcard .cap{font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.minis{display:grid;gap:8px}
+.mini{display:grid;grid-template-columns:6.5em minmax(0,1fr) 2.6em;gap:8px;align-items:center;font-size:13px}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--surface-2)}
+/* report sheet */
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 0 var(--line);max-width:1080px;margin:0 auto}
+.sheet-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center;padding:14px 18px;border-bottom:3px solid var(--accent)}
+.sheet-h .t{font-size:19px;font-weight:700}
+.sheet-h .t small{display:block;font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:.04em}
+.idrow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.idrow div{padding:8px 12px;border-right:1px solid var(--line);min-width:0}
+.idrow div:last-child{border-right:none}
+.idrow span{display:block;font-size:11px;color:var(--muted)}
+.idrow b{font-family:var(--mono);font-size:14px;font-weight:600}
+@media (max-width:760px){.idrow{grid-template-columns:repeat(3,minmax(0,1fr))}.idrow div:nth-child(3){border-right:none}.idrow div:nth-child(-n+3){border-bottom:1px solid var(--line)}}
+.sheet-b{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);gap:0}
+@media (max-width:880px){.sheet-b{grid-template-columns:minmax(0,1fr)}}
+.sheet-b>.colL{padding:14px 18px;border-right:1px solid var(--line);min-width:0}
+.sheet-b>.colR{padding:14px 16px;background:var(--bg);min-width:0}
+@media (max-width:880px){.sheet-b>.colL{border-right:none;border-bottom:1px solid var(--line)}}
+.sec{background:var(--ink);color:var(--surface);font-weight:700;font-size:13px;padding:5px 10px;border-radius:3px;margin:16px 0 8px;display:flex;justify-content:space-between;gap:8px}
+.sec:first-child{margin-top:0}
+.sec span{font-weight:500;opacity:.8;font-size:11.5px}
+.rbhead,.rb{display:grid;grid-template-columns:8.6em minmax(0,1fr) 6.2em;gap:10px;align-items:center}
+.rbhead{font-size:10.5px;color:var(--muted)}
+.rbhead .zl{display:grid;grid-template-columns:1fr 2fr 1fr;text-align:center}
+.rb{padding:5px 0;border-bottom:1px dotted var(--line);font-size:13px}
+.rb .rs{position:relative;height:16px}
+.rb .zones{position:absolute;inset:0;display:grid;grid-template-columns:1fr 2fr 1fr}
+.rb .zones i{border-left:1px dashed var(--line)}
+.rb .zones i:nth-child(2){background:var(--band)}
+.rb .fill{position:absolute;left:0;top:4px;height:8px;border-radius:0 4px 4px 0}
+.rb .rs b{position:absolute;top:-2px;transform:translateX(6px);font-family:var(--mono);font-size:12px;font-weight:600;white-space:nowrap}
+.rb .rs b.inside{transform:translateX(calc(-100% - 6px))}
+.rb .ru{font-size:11.5px;color:var(--muted);text-align:right}
+.seg{display:grid;grid-template-columns:minmax(0,1fr) 110px minmax(0,1fr);gap:8px;align-items:center}
+.seg .side{display:grid;gap:4px;font-size:12.5px}
+.seg .side div{display:flex;justify-content:space-between;gap:6px;border-bottom:1px dotted var(--line);padding:2px 0}
+.seg .side b{font-family:var(--mono);font-weight:600}
+.seg .side b.lo{color:var(--warn)}
+.bigscore{text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px}
+.bigscore b{font-family:var(--mono);font-size:46px;font-weight:600;line-height:1.05;color:var(--accent)}
+.rbox{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:12.5px}
+.rbox h4{margin:0 0 6px;font-size:12.5px}
+.rbox ul{margin:0;padding-left:1.1em}.rbox li{margin:.2em 0}
+.sheet-f{padding:10px 18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--surface)}
+.kpi span{font-size:11.5px;color:var(--muted);display:block}
+.kpi b{font-family:var(--mono);font-size:22px;font-weight:600}
+.kpi .vs{font-size:11.5px;color:var(--muted)}
+.refs li{margin:.4em 0;font-size:13px}
+.refs li:target{background:var(--accent-soft)}
+.mod{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:10px}
+.mod .n{font-family:var(--mono);font-weight:600;color:var(--accent);font-size:15px}
+.mod p{margin:.2em 0 0;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <svg width="40" height="40" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="9" fill="var(--accent)"/><path d="M14 7c-4 0-6 5-6 11s1 13 6 13 5-4 5-8-2-5-2-9 1-7-3-7z" fill="#fff" opacity=".95"/><circle cx="13" cy="11" r="1.7" fill="var(--accent)"/><circle cx="12" cy="16" r="1.7" fill="var(--accent)"/><circle cx="13" cy="26" r="2" fill="var(--accent)"/><path d="M26 10c3 0 5 4 5 9s-1 11-5 11-4-3-4-7 2-4 2-7-1-6 2-6z" fill="#fff" opacity=".6"/></svg>
+    <div>
+      <h1>HeyInsole Kids</h1>
+      <div class="by">BY NEWDIC · 걸음으로 보는 발달·성장 모니터링</div>
+    </div>
+  </div>
+  <div class="small muted" id="today"></div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="home" aria-selected="true">대시보드</button>
+  <button role="tab" data-tab="walk" aria-selected="false">걸음 라이브</button>
+  <button role="tab" data-tab="report" aria-selected="false">발달 리포트</button>
+  <button role="tab" data-tab="growth" aria-selected="false">성장 관리</button>
+  <button role="tab" data-tab="algo" aria-selected="false">HeyInsole 알고리즘</button>
+  <button role="tab" data-tab="verify" aria-selected="false">성능 검증 리포트</button>
+</nav>
+
+<div class="kids" id="kids"></div>
+<div class="panel" id="addPanel" hidden style="margin-bottom:16px">
+  <div class="phead"><h2>아이 추가</h2><span class="small muted">보행 특성은 연령 표준값으로 시작하고, 인솔 측정이 들어오면 실측값으로 바뀝니다.</span></div>
+  <form class="addkid" id="addForm">
+    <label>이름<input id="f-name" required maxlength="12" value=""></label>
+    <label>성별<select id="f-sex"><option value="M">남</option><option value="F">여</option></select></label>
+    <label>생년월<input id="f-birth" type="month" required value="2019-06"></label>
+    <label>현재 키 (cm)<input id="f-h" type="number" step="0.1" required value="120"></label>
+    <label>6개월 전 키 (cm)<input id="f-h6" type="number" step="0.1" value="117"></label>
+    <label>체중 (kg)<input id="f-w" type="number" step="0.1" required value="23"></label>
+    <label>아버지 키 (cm)<input id="f-fh" type="number" step="0.1" value="174"></label>
+    <label>어머니 키 (cm)<input id="f-mh" type="number" step="0.1" value="161"></label>
+    <label>발길이 (mm)<input id="f-foot" type="number" value="190"></label>
+    <label>현재 인솔 (mm)<input id="f-ins" type="number" value="200"></label>
+    <div class="row" style="align-self:end"><button class="btn pri" type="submit">추가</button><button class="btn" type="button" id="addCancel">취소</button></div>
+  </form>
+</div>
+
+<!-- HOME -->
+<section data-pane="home">
+  <div class="grid g-hero">
+    <div class="panel">
+      <div class="phead"><div><div class="eyebrow" id="h-eyebrow"></div><h2 id="h-title"></h2></div><span id="h-grade"></span></div>
+      <div class="score-wrap">
+        <div class="ring"><svg viewBox="0 0 132 132" width="132" height="132" id="h-ring"></svg><div class="v"><div><b id="h-score">–</b><span class="small muted">HeyInsole 점수</span></div></div></div>
+        <div class="minis" id="h-minis" style="flex:1;min-width:220px"></div>
+      </div>
+      <div class="flags" id="h-flags"></div>
+    </div>
+    <div class="panel">
+      <div class="phead"><h2>오늘의 걸음</h2><span class="small muted" id="h-live"></span></div>
+      <canvas id="h-foot" height="230" aria-label="발자국 애니메이션"></canvas>
+      <div class="legend" style="margin-top:6px"><span><i style="background:var(--left)"></i>왼발</span><span><i style="background:var(--right)"></i>오른발</span><span>밝게 빛나는 발 = 지금 딛고 있는 발(실시간 압력)</span><span>눈금 0.5 m</span></div>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:16px" id="h-domains"></div>
+  <div class="panel" style="margin-top:16px">
+    <div class="phead"><h2>우리 아이들 한눈에</h2><span class="small muted">행을 누르면 그 아이로 바뀝니다</span></div>
+    <div class="tbl"><table id="h-family"></table></div>
+  </div>
+</section>
+
+<!-- WALK -->
+<section data-pane="walk" hidden>
+  <div class="panel">
+    <div class="phead">
+      <div><h2>발자국 재생</h2><span class="small muted" id="w-sub"></span></div>
+      <div class="row"><button class="btn pri" id="l-play">일시정지</button><button class="btn" id="w-speed">1× 속도</button><button class="btn dan" id="l-fall">넘어짐 상황 재생</button><button class="btn" id="l-reset">처음부터</button></div>
+    </div>
+    <canvas id="w-foot" height="260" aria-label="발자국 애니메이션"></canvas>
+    <div class="legend" style="margin:8px 0 4px"><span><i style="background:var(--left)"></i>왼발 입각</span><span><i style="background:var(--right)"></i>오른발 입각</span><span><i style="background:var(--accent)"></i>양발 지지</span></div>
+    <canvas id="w-tl" height="92" aria-label="보행 주기 타임라인"></canvas>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <div class="phead"><h2>센서 스트림</h2><span class="legend"><span><i style="background:var(--left)"></i>왼발 하중</span><span><i style="background:var(--right)"></i>오른발 하중</span><span><i style="background:var(--accent)"></i>왼발 |a|</span><span><i style="background:var(--muted)"></i>왼발 피치 각속도</span></span></div>
+    <canvas id="l-canvas" height="300" aria-label="실시간 센서 파형"></canvas>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="panel"><h3>인솔 압력 (현재)</h3><div class="row" style="justify-content:center;gap:20px;margin-top:8px" id="l-insoles"></div></div>
+    <div class="panel"><h3>누적 지표</h3><div class="kv" id="l-metrics" style="margin-top:8px"></div></div>
+    <div class="panel"><h3>넘어짐 감지 (4단계)</h3>
+      <div class="stage" id="l-stage" style="margin-top:8px">
+        <div data-s="0"><b>① 충격</b>양발 |a| &gt; 2.5 g</div>
+        <div data-s="1"><b>② 자세 변화</b>1.5 s 내 회전 &gt; 50°</div>
+        <div data-s="2"><b>③ 하중 소실</b>양발 하중 &lt; 5%</div>
+        <div data-s="3"><b>④ 무동작</b>3 s 지속 → 보호자 알림</div>
+      </div>
+      <div id="l-alert" class="alert" hidden style="margin-top:10px"></div>
+      <div class="log" id="l-log" style="margin-top:10px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORT -->
+<section data-pane="report" hidden>
+  <div id="rep"></div>
+</section>
+
+<!-- GROWTH -->
+<section data-pane="growth" hidden>
+  <div class="grid g2">
+    <div class="panel"><div class="phead"><h2>키 성장곡선</h2><span class="small muted">음영 = 중앙값 ±2SD, 점선 = ±1SD</span></div><div id="g-hchart"></div></div>
+    <div class="panel"><div class="phead"><h2>체중 성장곡선</h2><span class="small muted">음영 = 중앙값 ±2SD</span></div><div id="g-wchart"></div></div>
+  </div>
+  <div class="grid g3" style="margin-top:16px">
+    <div class="panel"><h3>체격 판정</h3><div class="kv" id="g-body" style="margin-top:8px"></div></div>
+    <div class="panel"><h3>발 성장 · 인솔 교체</h3><div id="g-foot" style="margin-top:8px"></div></div>
+    <div class="panel"><h3>최근 14일 활동량</h3><div id="g-act" style="margin-top:6px"></div></div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <div class="phead"><h2>기본 건강 체크리스트</h2><span class="small muted">걸음 데이터와 신체계측을 함께 본 판정</span></div>
+    <div class="tbl"><table id="g-check"></table></div>
+    <p class="note">성장 기준값은 2017 소아청소년 성장도표 연령별 중앙값의 근사치이며 백분위는 정규분포 근사입니다. 판정은 선별 목적이며 진단이 아닙니다. 적색 항목은 소아청소년과·소아정형외과 상담을 권장합니다.</p>
+  </div>
+</section>
+
+<!-- ALGO -->
+<section data-pane="algo" hidden>
+  <div class="grid g2">
+    <div class="panel">
+      <div class="eyebrow">HeyInsole v2 · 8×FSR + 9축 IMU · 100 Hz</div>
+      <h2 style="margin:4px 0 12px">6개 분석 모듈</h2>
+      <div class="grid" style="gap:12px">
+        <div class="mod"><span class="n">01</span><div><b>체중 적응형 접지 검출</b><p>아이 본인의 최근 최대 하중을 기준으로 12%에서 딛음, 7%에서 떼기를 판정합니다. 15 kg 유아부터 성인까지 같은 방식으로 걸음을 셉니다.</p></div></div>
+        <div class="mod"><span class="n">02</span><div><b>자세 보정 보폭 추정</b><p>자이로로 발 기울기를 추적해 중력 성분을 제거하고, 발이 바닥에 멈춘 순간마다 속도를 0으로 맞춰(ZUPT) 적분 오차를 없앱니다.</p></div></div>
+        <div class="mod"><span class="n">03</span><div><b>발진행각</b><p>발이 공중에 있는 동안의 이동 방향과 발 축의 각도 차이를 °로 계산합니다. 안짱걸음(−)과 팔자걸음(+)을 구분합니다.</p></div></div>
+        <div class="mod"><span class="n">04</span><div><b>8채널 발바닥 하중</b><p>뒤꿈치·중족부·앞발 분담률과 처음 닿는 부위를 계산해 발끝 보행과 생리적 평발을 구분합니다.</p></div></div>
+        <div class="mod"><span class="n">05</span><div><b>연령 표준과 보행 성숙 연령</b><p>3~17세 표준과 비교한 z-점수, 그리고 분당 걸음수·보폭·리듬 변동이 가장 잘 맞는 나이를 "보행 성숙 연령"으로 추정합니다.</p></div></div>
+        <div class="mod"><span class="n">06</span><div><b>넘어짐 4단계 판정</b><p>충격 → 자세 변화 → 하중 소실 → 무동작을 차례로 확인해 오경보를 줄이고, 회복된 넘어짐은 횟수로 기록합니다.</p></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2 style="margin-bottom:10px">처리 흐름</h2>
+<pre class="mermaid">
+flowchart TB
+  A[인솔 센서<br/>FSR 8ch + IMU 9축 · 100 Hz] --> B[01 체중 적응 접지 검출]
+  A --> C[02 자세 보정 · ZUPT]
+  B --> C
+  C --> D[03 보폭 · 발진행각]
+  B --> E[주기 · 양발 지지 · 리듬 변동 · 좌우 대칭]
+  A --> F[04 발바닥 하중 분담]
+  D --> G[05 연령 표준 z-점수 · 보행 성숙 연령]
+  E --> G
+  F --> G
+  G --> H[뇌·운동 발달 · 키 성장 · 성장 관리]
+  A --> I[06 넘어짐 판정]
+</pre>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <div class="phead"><h2>근거 기반 설계</h2><span class="small muted">각 지표가 무엇을 근거로 하는지와 근거 수준</span></div>
+    <div class="tbl"><table id="a-evid"></table></div>
+    <p class="note">HeyInsole은 뇌 발달이나 키를 직접 측정하거나 키우지 않습니다. 걷기 리듬·균형·발끝 보행 같은 운동 발달 신호, 성장 속도, 뼈 건강과 연관된 활동량을 매일 측정해 또래 기준과 비교하고, 확인이 필요한 시점을 알려 줍니다.</p>
+  </div>
+  <div class="panel" style="margin-top:16px">
+    <h2 style="margin-bottom:8px">참고문헌</h2>
+    <ol class="refs" id="a-refs"></ol>
+  </div>
+</section>
+
+<!-- VERIFY -->
+<section data-pane="verify" hidden>
+  <div id="ver"></div>
+</section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>try{mermaid.initialize({startOnLoad:true,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"})}catch(e){}</script>
+<script>
+/* ===== HeyInsole gait engine v2 (signal model + reference fixed-threshold method + HeyInsole v2) ===== */
+const G=9.806, FS=100, DT=1/FS;
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function randn(r){let u=0,v=0;while(!u)u=r();v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const bump=(u,c,w)=>Math.exp(-0.5*((u-c)/w)**2);
+/* 8 FSR layout: 0 hallux,1 MT1,2 MT3,3 MT5,4 mid-lat,5 arch(mid-med),6 heel-med,7 heel-lat */
+function simulate(p,dur=40,seed=7,fall=null){
+  const r=rng(seed),N=Math.round(dur*FS),k=p.weight/70;
+  const feet=[0,1].map(()=>({fsr:Array.from({length:8},()=>new Float32Array(N)),ax:new Float32Array(N),ay:new Float32Array(N),az:new Float32Array(N),gy:new Float32Array(N),gz:new Float32Array(N),truth:[]}));
+  const T0=120/p.cadence;const Ts=[];{let t=0;while(t<dur+3){const T=T0*(1+p.cv*randn(r));Ts.push(T);t+=T;}}
+  for(let f=0;f<2;f++){
+    const F=feet[f], asym=f===0?1:p.rStride, tAsym=f===0?1:p.rStance, fpa=(f===0?p.fpaL:p.fpaR)*Math.PI/180;
+    let t=0.3, si=0; if(f===1) t+=Ts[0]/2;
+    const bg=0.02*(f?-1:1), ba=[0.08,-0.05,0.06];
+    while(t<dur){
+      const T=f===0?Ts[si]:(Ts[si]+(Ts[si+1]||Ts[si]))/2; si++; const sw=Math.min(0.5,(p.swing/100)/(tAsym)), Tst=T*(1-sw), Tsw=T*sw;
+      const L=p.height*p.strideRatio*asym*(1+p.cv*0.8*randn(r));
+      F.truth.push({hs:t,to:t+Tst,T,L});
+      const i0=Math.round(t*FS), i1=Math.min(N,Math.round((t+T)*FS));
+      const toe=p.heel<0.3;
+      for(let i=i0;i<i1;i++){
+        const tt=i*DT-t;
+        if(tt<Tst){const u=tt/Tst;
+          const heelA=900*p.heel*k, c0=toe?0.42:0.72, wf=toe?0.28:0.17;
+          const v=[520*bump(u,toe?0.6:0.86,0.09),620*bump(u,c0,wf),700*bump(u,c0,wf),430*bump(u,c0,wf),380*bump(u,0.45,0.2)*(0.6+0.4*p.arch),150*bump(u,0.45,0.2)*p.arch*p.arch,heelA*bump(u,0.14,0.1),heelA*0.85*bump(u,0.16,0.1)];
+          for(let s=0;s<8;s++){const val=(s<6?v[s]*k:v[s])+6*randn(r);F.fsr[s][i]=Math.max(0,Math.min(1023,val));}
+          const imp=tt<0.05?1.4*G*Math.exp(-tt/0.012)*Math.min(1,k*1.6)*(toe?0.5:1):0;
+          F.ax[i]=-0.035*G+ba[0]+0.12*randn(r);F.ay[i]=ba[1]+0.12*randn(r);F.az[i]=G+imp+ba[2]+0.12*randn(r);
+          F.gy[i]=bg+0.025*randn(r);F.gz[i]=0.02*randn(r);
+        }else{const s=(tt-Tst)/Tsw;
+          const a=L/(Tsw*Tsw)*(60*s-180*s*s+120*s*s*s), h=0.07*p.height/1.6;
+          const azw=h*2*Math.PI*Math.PI*Math.cos(2*Math.PI*s)/(Tsw*Tsw);
+          const th=0.45*Math.sin(2*Math.PI*s)+0.035, dth=0.45*2*Math.PI*Math.cos(2*Math.PI*s)/Tsw;
+          const axh=a*Math.cos(fpa), ayh=-a*Math.sin(fpa), azp=azw+G, c=Math.cos(th), sn=Math.sin(th);
+          F.ax[i]=c*axh-sn*azp+ba[0]+0.12*randn(r);F.ay[i]=ayh+ba[1]+0.12*randn(r);F.az[i]=sn*axh+c*azp+ba[2]+0.12*randn(r);
+          F.gy[i]=dth*1.02+bg+0.025*randn(r);F.gz[i]=0.02*randn(r);
+          for(let q=0;q<8;q++)F.fsr[q][i]=Math.max(0,4*randn(r));
+        }
+      }
+      t+=T;
+    }
+  }
+  if(fall){const i0=Math.round(fall*FS);for(const F of feet){for(let i=i0;i<N;i++){const d=(i-i0)*DT;
+    const imp=d<0.15?3.4*G*Math.exp(-d/0.05):0; const rot=Math.min(1,d/0.6);
+    F.ax[i]=G*Math.sin(rot*1.4)+imp*0.5+0.1*randn(r);F.ay[i]=0.1*randn(r);F.az[i]=G*Math.cos(rot*1.4)+imp+0.1*randn(r);
+    F.gy[i]=d<0.6?2.3+0.2*randn(r):0.02*randn(r);F.gz[i]=d<0.6?1.2:0.02*randn(r);
+    for(let q=0;q<8;q++)F.fsr[q][i]=Math.max(0,d<0.3?200*(1-d/0.3):3*randn(r));}}}
+  return {feet,N,dur,p};
+}
+/* ---------- improved v2 ---------- */
+function fsrSum(F,i){let s=0;for(let q=0;q<8;q++)s+=F.fsr[q][i];return s}
+function detectStance(F,n0,n1){ // adaptive hysteresis on normalized total load + gyro ZUPT
+  const st=new Uint8Array(n1);let on=false,mx=50,run=0;const ev=[];
+  for(let i=n0;i<n1;i++){const s=fsrSum(F,i);mx=Math.max(mx*0.9995,s);
+    const hi=0.12*mx,lo=0.07*mx;
+    if(!on&&s>hi&&s>40){on=true;ev.push({type:'HS',i});}
+    else if(on&&s<lo){on=false;ev.push({type:'TO',i});}
+    st[i]=on?1:0;}
+  return {st,ev};
+}
+function analyzeFoot(F,n0,n1){
+  const {st,ev}=detectStance(F,n0,n1);const strides=[];
+  const hs=ev.filter(e=>e.type==='HS').map(e=>e.i), to=ev.filter(e=>e.type==='TO').map(e=>e.i);
+  for(let k=0;k<hs.length-1;k++){const a=hs[k],b=hs[k+1];const t=to.find(x=>x>a&&x<b);if(t==null)continue;
+    const T=(b-a)*DT; if(T<0.5||T>2.2)continue;
+    // strapdown over swing with ZUPT at both ends
+    let th=0,vx=0,vy=0,vz=0;const V=[];const gb=meanRange(F.gy,Math.max(a,t-15),t);
+    const i0=t-3,i1=b+2;
+    for(let i=i0;i<=i1;i++){th+=(F.gy[i]-gb)*DT;const c=Math.cos(th),s=Math.sin(th);
+      const hx=c*F.ax[i]+s*F.az[i],hy=F.ay[i],hz=-s*F.ax[i]+c*F.az[i]-G;
+      vx+=hx*DT;vy+=hy*DT;vz+=hz*DT;V.push([vx,vy,vz]);}
+    const M=V.length;let px=0,py=0;
+    for(let j=0;j<M;j++){const f=j/(M-1);px+=(V[j][0]-f*vx)*DT;py+=(V[j][1]-f*vy)*DT;}
+    // region shares during stance
+    let heel=0,mid=0,fore=0,tot=0;for(let i=a;i<t;i++){heel+=F.fsr[6][i]+F.fsr[7][i];mid+=F.fsr[4][i]+F.fsr[5][i];const fo=F.fsr[0][i]+F.fsr[1][i]+F.fsr[2][i]+F.fsr[3][i];fore+=fo;}
+    tot=heel+mid+fore||1;
+    // initial contact: which region loads first in first 60ms
+    let ic='heel';{let hh=0,ff=0;for(let i=a;i<a+6;i++){hh+=F.fsr[6][i]+F.fsr[7][i];ff+=F.fsr[1][i]+F.fsr[2][i]+F.fsr[3][i];}if(ff>hh*1.2)ic='fore';}
+    strides.push({a,b,t,T,stance:(t-a)*DT,L:Math.hypot(px,py),fpa:Math.atan2(-py,px)*180/Math.PI,heel:heel/tot*100,mid:mid/tot*100,fore:fore/tot*100,archIdx:(F.fsr[5]?0:0),ic});
+  }
+  return {strides,st};
+}
+function meanRange(a,i,j){let s=0,n=0;for(let x=i;x<j;x++){s+=a[x];n++}return n?s/n:0}
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:NaN;
+const sd=a=>{const m=mean(a);return Math.sqrt(mean(a.map(x=>(x-m)**2)))};
+function analyzeV2(sim,t0=2,t1=null){
+  const n0=Math.round(t0*FS),n1=Math.round((t1??sim.dur)*FS);
+  const A=sim.feet.map(F=>analyzeFoot(F,n0,n1));
+  const all=[...A[0].strides,...A[1].strides];if(A[0].strides.length<3||A[1].strides.length<3)return null;
+  // steady state: drop first & last stride of each foot
+  const S=A.map(x=>x.strides.slice(1,-1).length>=2?x.strides.slice(1,-1):x.strides);
+  const Tm=mean([...S[0],...S[1]].map(s=>s.T));
+  let ds=0,cnt=0;for(let i=n0;i<n1;i++){if(A[0].st[i]||A[1].st[i]){cnt++;if(A[0].st[i]&&A[1].st[i])ds++;}}
+  const side=S.map(ss=>({L:mean(ss.map(s=>s.L)),T:mean(ss.map(s=>s.T)),stance:mean(ss.map(s=>s.stance/s.T*100)),fpa:mean(ss.map(s=>s.fpa)),heel:mean(ss.map(s=>s.heel)),mid:mean(ss.map(s=>s.mid)),fore:mean(ss.map(s=>s.fore)),cv:sd(ss.map(s=>s.T))/mean(ss.map(s=>s.T))*100,fic:ss.filter(s=>s.ic==='fore').length/ss.length*100,n:ss.length}));
+  const si=(a,b)=>Math.abs(a-b)/((a+b)/2)*100;
+  const L=(side[0].L+side[1].L)/2;
+  return {side,steps:A[0].strides.length+A[1].strides.length+2,cadence:120/Tm,strideT:Tm,L,speed:L/Tm,swing:100-(side[0].stance+side[1].stance)/2,ds:ds/(n1-n0)*100,cv:(side[0].cv+side[1].cv)/2,
+    siL:si(side[0].L,side[1].L),siSt:si(side[0].stance,side[1].stance),si:Math.max(si(side[0].L,side[1].L),si(side[0].stance,side[1].stance)),
+    heel:(side[0].heel+side[1].heel)/2,mid:(side[0].mid+side[1].mid)/2,fore:(side[0].fore+side[1].fore)/2,fic:(side[0].fic+side[1].fic)/2};
+}
+/* ---------- reference: conventional fixed-threshold method (40Hz, absolute ADC thresholds, HPF double integration) ---------- */
+function analyzeLegacy(sim,t0=2,t1=null){
+  const n0=Math.round(t0*40),n1=Math.round((t1??sim.dur)*40);const out=[];
+  for(const F of sim.feet){
+    const idx=j=>Math.min(sim.N-1,Math.round(j*2.5));
+    let on=false,hs=[],to=[];const buf=[];
+    for(let j=n0;j<n1;j++){const i=idx(j);const heel=F.fsr[6][i],m=(F.fsr[0][i]+F.fsr[1][i]+F.fsr[4][i]+heel)/4;buf.push(m);if(buf.length>8)buf.shift();const maf=mean(buf);
+      if(!on&&(heel>400||maf>150)){on=true;hs.push(j);} else if(on&&heel<120&&maf<60){on=false;to.push(j);} }
+    const strides=[];
+    for(let k=0;k<hs.length-1;k++){const a=hs[k],b=hs[k+1];const t=to.find(x=>x>a&&x<b);if(t==null)continue;
+      let bx=0,by=0,bz=0,px=0,py=0,pz=0,vx=0,vy=0,vz=0,pv=0,d=0,first=true;
+      for(let j=t;j<=b;j++){const i=idx(j);const x=F.ax[i],y=F.ay[i],z=F.az[i];
+        if(first){bx=x;by=y;bz=z;first=false}
+        bx=bx*0.963+x*0.037;by=by*0.963+y*0.037;bz=bz*0.963+z*0.037;
+        const hx=x-bx,hy=y-by,hz=z-bz;vx+=(px+(hx-px)*0.5)*0.025;vy+=(py+(hy-py)*0.5)*0.025;vz+=(pz+(hz-pz)*0.5)*0.025;px=hx;py=hy;pz=hz;
+        const v=Math.hypot(vx,vy,vz);d+=(pv+(v-pv)*0.5)*0.025;pv=v;}
+      const sx=[],sy=[];for(let j=t;j<=b;j++){const i=idx(j);sx.push(F.ax[i]);sy.push(F.ay[i]);}
+      strides.push({T:(b-a)/40,stance:(t-a)/40,L:d,r:sd(sy)/sd(sx)});
+    }
+    out.push({strides,hsCount:hs.length});
+  }
+  const all=[...out[0].strides,...out[1].strides];
+  if(all.length<2)return {detected:out[0].hsCount+out[1].hsCount,fail:true};
+  const Tm=mean(all.map(s=>s.T)),L=mean(all.map(s=>s.L));const r=mean(all.map(s=>s.r));
+  const grade=r>0.6?3:r>0.45?2:r>0.3?1:0;
+  return {detected:out[0].hsCount+out[1].hsCount,cadence:120/Tm,L,speed:L/Tm,swing:100-mean(all.map(s=>s.stance/s.T*100)),ratio:r,grade,fail:false,
+    sym:out.map(o=>mean(o.strides.map(s=>s.L)))};
+}
+if(typeof module!=='undefined')module.exports={simulate,analyzeV2,analyzeLegacy,analyzeFoot,mean,sd,rng};
+
+/* ================= HeyInsole Kids — app ================= */
+const TODAY=new Date(2026,8,28);
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt=(v,d=1)=>(v==null||isNaN(v))?'–':Number(v).toFixed(d);
+const store={get(k,d){try{const v=localStorage.getItem('heyinsole.'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('heyinsole.'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- references ---------- */
+const REFS=[
+ ['Chaput JP, et al. 2020 WHO guidelines on physical activity and sedentary behaviour for children and adolescents aged 5–17 years. Int J Behav Nutr Phys Act. 2020;17:141.','https://link.springer.com/article/10.1186/s12966-020-01037-z','WHO 2020'],
+ ['Hind K, Burrows M. Weight-bearing exercise and bone mineral accrual in children and adolescents: a review of controlled trials. Bone. 2007;40(1):14–27.','https://pubmed.ncbi.nlm.nih.gov/16956802/','Hind 2007'],
+ ['Behringer M, et al. Effects of weight-bearing activities on bone mineral content and density in children and adolescents: a meta-analysis. J Bone Miner Res. 2014;29(2):467–478.','https://pubmed.ncbi.nlm.nih.gov/23857721/','Behringer 2014'],
+ ['Tan VP, et al. Influence of physical activity on bone strength in children and adolescents: a systematic review. J Bone Miner Res. 2014;29(10):2161–2181.','https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.2254','Tan 2014'],
+ ['Malina RM. Physical activity and training: effects on stature and the adolescent growth spurt. Med Sci Sports Exerc. 1994;26(6):759–766.','https://pubmed.ncbi.nlm.nih.gov/8052116/','Malina 1994'],
+ ['Rogol AD, Clark PA, Roemmich JN. Growth and pubertal development in children and adolescents: effects of diet and physical activity. Am J Clin Nutr. 2000;72(2 Suppl):521S–528S.','https://ajcn.nutrition.org/article/S0002-9165(23)06730-8/fulltext','Rogol 2000'],
+ ['Engström P, Tedroff K. The prevalence and course of idiopathic toe-walking in 5-year-old children. Pediatrics. 2012;130(2):279–284.','https://publications.aap.org/pediatrics/article-pdf/130/2/279/1089511/peds_2012-0225.pdf','Engström 2012'],
+ ['Engström P, Tedroff K. Idiopathic toe-walking: prevalence and natural history from birth to ten years of age. J Bone Joint Surg Am. 2018;100(8):640–647.','https://www.jbjs.org/reader.php?rsuite_id=1636057','Engström 2018'],
+ ['Staheli LT, et al. Lower-extremity rotational problems in children: normal values to guide management. J Bone Joint Surg Am. 1985;67(1):39–47.',null,'Staheli 1985'],
+ ['Sass P, Hassan G. Lower extremity abnormalities in children. Am Fam Physician. 2003;68(3):461–468.','https://www.aafp.org/afp/2003/0801/p461','Sass 2003'],
+ ['Evans AM, et al. Foot orthoses for treating paediatric flat feet. Cochrane Database Syst Rev. 2022;CD006311.pub3.','https://www.cochrane.org/evidence/CD006311_foot-orthoses-treating-flat-feet-children','Cochrane 2022'],
+ ['Pfeiffer M, et al. Prevalence of flat foot in preschool-aged children. Pediatrics. 2006;118(2):634–639.',null,'Pfeiffer 2006'],
+ ['The impact of overweight and obesity on plantar pressure in children and adolescents: a systematic review. Int J Environ Res Public Health. 2020;17(18):6600.','https://www.mdpi.com/1660-4601/17/18/6600','IJERPH 2020'],
+ ['Kim JH, et al. The 2017 Korean National Growth Charts for children and adolescents. Korean J Pediatr. 2018;61(5):135–149.','https://www.e-cep.org/journal/view.php?doi=10.3345%2Fkjp.2018.61.5.135','성장도표 2017'],
+ ['Kindregan D, Gallagher L, Gormley J. Gait deviations in children with autism spectrum disorders: a review. Autism Res Treat. 2015;2015:741480.','https://onlinelibrary.wiley.com/doi/10.1155/2015/741480','Kindregan 2015'],
+ ['Hausdorff JM, et al. Maturation of gait dynamics: stride-to-stride variability and its temporal organization in children. J Appl Physiol. 1999;86(3):1040–1047.',null,'Hausdorff 1999'],
+ ['Sutherland DH, et al. The development of mature gait. J Bone Joint Surg Am. 1980;62(3):336–353.',null,'Sutherland 1980'],
+ ['Use of wearable inertial sensors for the assessment of spatiotemporal gait variables in children: a systematic review. Motriz.','http://www.scielo.br/j/motriz/a/4dB8ZDfkTcwNNhL4KkRJGgc/?lang=en','IMU 아동 리뷰']
+];
+const chip=(...ns)=>ns.map(n=>`<button class="chip" data-ref="${n}" title="${REFS[n-1][0].replace(/"/g,'')}">${REFS[n-1][2]}</button>`).join('');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ref]');if(!b)return;showTab('algo');const el=document.getElementById('ref-'+b.dataset.ref);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});history.replaceState(null,'','#algo')}});
+
+/* ---------- sample children (예시 데이터) ---------- */
+const SAMPLE=[
+ {id:'jiwoo',name:'지우',sex:'F',birth:'2021-05',father:176,mother:162,foot:172,insole:180,steps:11600,seed:11,sls:[11,9],
+  heights:[['2025-03',104.0],['2025-09',107.1],['2026-03',110.0],['2026-09',112.8]],weights:[['2025-03',17.2],['2025-09',18.0],['2026-03',18.8],['2026-09',19.5]],
+  gait:{cadence:146,strideRatio:.75,swing:38,fpaL:4,fpaR:5,heel:1,arch:1.95,rStride:1,rStance:1,cv:.035}},
+ {id:'minjun',name:'민준',sex:'M',birth:'2018-03',father:172,mother:158,foot:208,insole:220,steps:10300,seed:23,sls:[24,21],
+  heights:[['2025-03',124.2],['2025-09',126.6],['2026-03',128.7],['2026-09',130.5]],weights:[['2025-03',27.0],['2025-09',28.1],['2026-03',29.4],['2026-09',30.5]],
+  gait:{cadence:136,strideRatio:.78,swing:39,fpaL:-9,fpaR:-6,heel:1,arch:1.0,rStride:.97,rStance:1.02,cv:.03}},
+ {id:'doyun',name:'도윤',sex:'M',birth:'2022-06',father:178,mother:165,foot:159,insole:165,steps:12900,seed:37,sls:[3,2],
+  heights:[['2025-03',97.5],['2025-09',99.8],['2026-03',102.0],['2026-09',104.1]],weights:[['2025-03',14.9],['2025-09',15.4],['2026-03',16.0],['2026-09',16.4]],
+  gait:{cadence:160,strideRatio:.68,swing:37,fpaL:2,fpaR:3,heel:.08,arch:1.3,rStride:1,rStance:1,cv:.06}},
+ {id:'haeun',name:'하은',sex:'F',birth:'2015-04',father:170,mother:160,foot:234,insole:235,steps:7400,seed:41,sls:[30,17],
+  heights:[['2025-03',138.5],['2025-09',142.0],['2026-03',145.9],['2026-09',149.6]],weights:[['2025-03',40.1],['2025-09',43.6],['2026-03',47.2],['2026-09',50.2]],
+  gait:{cadence:126,strideRatio:.81,swing:39,fpaL:7,fpaR:8,heel:1,arch:1.0,rStride:.93,rStance:1.07,cv:.03}}
+];
+let kids=[...SAMPLE,...store.get('custom',[])];
+
+/* ---------- reference tables ---------- */
+const interp=(tab,x)=>{if(x<=tab[0][0])return tab[0][1];for(let i=1;i<tab.length;i++){if(x<=tab[i][0]){const[a,b]=[tab[i-1],tab[i]];return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0])}}return tab[tab.length-1][1]};
+const A15=[3,4,5,6,7,8,9,10,11,12,13,14,15];
+const zipA=arr=>A15.map((a,i)=>[a,arr[i]]);
+const REF={M:{h:zipA([96.5,103.1,109.6,115.9,122.1,127.9,133.4,138.8,144.7,151.4,158.6,165.0,169.2]),hsd:zipA([3.8,4.2,4.5,4.8,5.1,5.4,5.8,6.2,6.8,7.3,7.4,6.8,6.2]),w:zipA([14.7,16.8,19.0,21.3,24.2,27.5,31.3,35.5,40.2,45.4,50.9,56.0,60.1]),adult:173.6,asd:5.8},
+           F:{h:zipA([95.4,102.1,108.6,114.7,120.8,126.7,132.6,139.1,145.8,151.7,155.9,158.3,159.5]),hsd:zipA([3.7,4.1,4.4,4.7,5.0,5.4,5.9,6.4,6.7,6.4,5.8,5.4,5.2]),w:zipA([14.2,16.3,18.4,20.7,23.4,26.6,30.2,34.4,39.1,43.7,47.7,50.5,52.6]),adult:160.9,asd:5.2}};
+const WCV=zipA([.11,.12,.13,.14,.15,.17,.18,.19,.2,.2,.2,.19,.18]);
+const GN={cad:[[3,152],[4,150],[5,146],[6,142],[7,139],[8,136],[9,133],[10,130],[12,124],[14,118],[16,115],[18,113]],
+  sr:[[3,.68],[4,.71],[5,.74],[6,.76],[7,.77],[8,.78],[10,.80],[12,.81],[14,.82],[18,.82]],
+  swing:[[3,37],[5,38],[8,39],[18,39]],ds:[[3,28],[5,25],[8,23],[12,21],[18,20]],
+  cvU:[[3,6.5],[4,5.8],[5,5],[7,4.2],[10,3.5],[14,3.0],[18,2.8]],fpa:[[3,3],[5,4],[8,6],[12,7],[18,8]],
+  midU:[[3,32],[5,30],[6,28],[7,24],[10,22],[18,22]],vel:[[3,7],[4,6.5],[5,6],[6,5.6],[9,5.2],[10,5.5]],
+  sls:[[3,4],[4,6],[5,9],[6,13],[7,18],[8,22],[9,26],[10,30],[18,30]]};
+function norms(age,height){const cad=interp(GN.cad,age),sr=interp(GN.sr,age);
+  return {cad,cadSd:12,sr,srSd:.06,speed:sr*height*cad/120,speedSd:.14,swing:interp(GN.swing,age),swingSd:2,ds:interp(GN.ds,age),dsSd:4,cvU:interp(GN.cvU,age),fpa:interp(GN.fpa,age),fpaSd:6,midU:interp(GN.midU,age),sls:interp(GN.sls,age)}}
+const erf=x=>{const t=1/(1+.3275911*Math.abs(x));const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x>=0?y:-y};
+const pct=z=>50*(1+erf(z/Math.SQRT2));
+
+/* ---------- helpers ---------- */
+const ym=s=>{const[a,b]=s.split('-').map(Number);return new Date(a,b-1,15)};
+const ageAt=(k,d=TODAY)=>(d-ym(k.birth))/(365.25*864e5);
+const last=a=>a[a.length-1];
+function ageLabel(a){const y=Math.floor(a),m=Math.floor((a-y)*12);return `${y}세 ${m}개월`}
+function hashSeed(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h%1000+1}
+const sc=z=>Math.round(100*Math.exp(-.5*(Math.max(0,Math.abs(z)-.7)/1.4)**2));
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const sev=s=>s>=80?'ok':s>=60?'warn':'crit';
+const sevTxt={ok:'양호',warn:'관찰',crit:'상담 권장',neu:'참고'};
+const pill=(c,t)=>`<span class="pill ${c}">${t??sevTxt[c]}</span>`;
+function maturityAge(v,h){let best=3,bc=1e9;for(let a=3;a<=17.001;a+=0.1){const c=2*((v.cadence-interp(GN.cad,a))/12)**2+((v.L/h-interp(GN.sr,a))/.07)**2+((v.cv-(interp(GN.cvU,a)-1.3))/1.2)**2+.5*((v.ds-interp(GN.ds,a))/5)**2;if(c<bc){bc=c;best=a}}return best}
+
+/* ---------- growth / activity ---------- */
+function growth(k){const age=ageAt(k),R=REF[k.sex],a=clamp(age,3,15);
+  const h=last(k.heights)[1],w=last(k.weights)[1];
+  const hm=interp(R.h,a),hs=interp(R.hsd,a),hz=(h-hm)/hs;
+  const wm=interp(R.w,a),wz=Math.log(w/wm)/interp(WCV,a);
+  const bmi=w/(h/100)**2,bm=wm/(hm/100)**2,bz=Math.log(bmi/bm)/(a<6?.1:a<10?.13:.15),bp=pct(bz);
+  const bcat=bp>=95?['crit','비만']:bp>=85?['warn','과체중']:bp<5?['warn','저체중']:['ok','정상'];
+  let vel=null;{const L=last(k.heights);const prev=[...k.heights].reverse().find(x=>(ym(L[0])-ym(x[0]))/(365.25*864e5)>=.45);
+    if(prev){const dt=(ym(L[0])-ym(prev[0]))/(365.25*864e5);vel=(L[1]-prev[1])/dt;}}
+  const velN=k.sex==='F'&&age>=10&&age<12.5?7.5:k.sex==='M'&&age>=12&&age<14.5?8.5:interp(GN.vel,age);
+  const velS=vel==null?'neu':vel<(age<4.5?5:4)?'warn':'ok';
+  const mph=(k.father&&k.mother)?(k.father+k.mother+(k.sex==='M'?13:-13))/2:null;
+  const pred=R.adult+hz*R.asd;
+  const room=k.insole-k.foot,rate=age<6?1.2:age<12?.9:.6,months=Math.max(0,(room-6)/rate);
+  const footS=room<6?'crit':room<9?'warn':'ok';
+  return {age,h,w,hm,hs,hz,hp:pct(hz),wm,wz,wp:pct(wz),bmi,bz,bp,bcat,vel,velN,velS,mph,pred,room,rate,months,footS};}
+function activity(k){const r=rng(k.seed*7+3),arr=[];for(let d=13;d>=0;d--){const dt=new Date(TODAY-d*864e5);const we=dt.getDay()%6===0;arr.push({d:dt,steps:Math.round(k.steps*(we?1.12:.96)*(0.78+0.44*r()))})}return arr}
+const stepTarget=age=>age<6?11000:age<13?12000:11000;
+
+/* ---------- per-child analysis ---------- */
+const cache={};
+function analyze(k){
+  if(cache[k.id])return cache[k.id];
+  const age=ageAt(k),h=last(k.heights)[1]/100,w=last(k.weights)[1];
+  const p={...k.gait,height:h,weight:w};
+  const sim=simulate(p,40,k.seed);
+  const v=analyzeV2(sim),b=analyzeLegacy(sim),N=norms(age,h);
+  const truthStr=sim.feet.flatMap(f=>f.truth.filter(t=>t.hs>=2&&t.hs<sim.dur-2));
+  const truth={L:mean(truthStr.map(t=>t.L)),cad:120/mean(truthStr.map(t=>t.T)),steps:sim.feet.reduce((s,f)=>s+f.truth.filter(t=>t.hs>=2&&t.hs<sim.dur).length,0),fpaL:k.gait.fpaL,fpaR:k.gait.fpaR};
+  const share=sim.feet.map(F=>{const s=new Array(8).fill(0);for(let q=0;q<8;q++)for(let i=0;i<sim.N;i++)s[q]+=F.fsr[q][i];const t=s.reduce((a,b)=>a+b,0)||1;return {s:s.map(x=>x/t),tot:t}});
+  const loadL=share[0].tot/(share[0].tot+share[1].tot)*100;
+  const z={cad:(v.cadence-N.cad)/N.cadSd,speed:(v.speed-N.speed)/N.speedSd,sr:(v.L/h-N.sr)/N.srSd,swing:(v.swing-N.swing)/N.swingSd,ds:(v.ds-N.ds)/N.dsSd,
+    fpaL:(v.side[0].fpa-N.fpa)/N.fpaSd,fpaR:(v.side[1].fpa-N.fpa)/N.fpaSd};
+  const cvS=v.cv<=N.cvU?100:Math.max(0,Math.round(100-18*(v.cv-N.cvU)));
+  const siS=v.si<=4?100:Math.max(0,Math.round(100-7*(v.si-4)));
+  const toeS=v.heel<8?35:v.heel<15?65:100;
+  let prS=toeS;if(v.mid>N.midU)prS=Math.min(prS,age<6?90:Math.round(100-4*(v.mid-N.midU)));
+  const dom=[['속도',sc(z.speed)],['보폭',sc(z.sr)],['리듬',Math.min(sc(z.cad),cvS)],['균형',Math.min(siS,sc(z.ds))],['압력',prS],['발각도',Math.min(sc(z.fpaL),sc(z.fpaR))]];
+  const gait=Math.round(mean(dom.map(d=>d[1])));
+  const mat=maturityAge(v,h),gap=age-mat,matS=gap<=.5?100:Math.max(30,Math.round(100-25*(gap-.5)));
+  const sls=k.sls||[N.sls,N.sls],slsS=Math.round(clamp(100*Math.min(...sls)/N.sls,20,100));
+  const brain=Math.round(mean([cvS,siS,toeS,slsS,matS]));
+  const g=growth(k),act=activity(k),tgt=stepTarget(age),avg=mean(act.map(a=>a.steps));
+  const hzS=Math.abs(g.hz)<=1.5?100:Math.max(30,Math.round(100-30*(Math.abs(g.hz)-1.5)));
+  const velSc=g.vel==null?85:g.vel>=g.velN*.8?100:Math.max(30,Math.round(100*g.vel/(g.velN*.8)));
+  const mphD=g.mph?g.pred-g.mph:0,mphS=Math.abs(mphD)<=8.5?100:Math.max(40,Math.round(100-6*(Math.abs(mphD)-8.5)));
+  const height=Math.round(mean([hzS,velSc,mphS]));
+  const bmiS=g.bp>=95?45:g.bp>=85?70:g.bp<5?60:100,actS=Math.round(clamp(100*avg/tgt,20,100)),insS=g.room>=9?100:g.room>=6?75:45;
+  const manage=Math.round(mean([bmiS,actS,insS,prS]));
+  const total=Math.round(mean([gait,brain,height,manage]));
+  const r=rng(k.seed+99),hist=[-7,-4,-2,0].map((d,i)=>i===3?total:Math.round(clamp(total+d+(r()*4-2),20,100)));
+  return cache[k.id]={k,age,h,w,p,sim,v,b,N,z,dom,gait,brain,height,manage,total,truth,share,loadL,cvS,siS,toeS,prS,mat,matS,sls,slsS,g,act,avg,tgt,hzS,velSc,mphD,bmiS,actS,insS,hist};
+}
+function gaitFlags(A){const {v,N,age}=A,f=[];
+  if(v.heel<8&&v.fic>50)f.push(['crit','발끝 보행',`뒤꿈치 하중 ${fmt(v.heel,0)}%, 앞발이 먼저 닿은 걸음 ${fmt(v.fic,0)}%. 3세 이후에도 계속되면 소아정형외과 또는 소아신경과 상담을 권장합니다.`]);
+  const fl=v.side[0].fpa,fr=v.side[1].fpa,lim=N.fpa-2*N.fpaSd;
+  if(Math.min(fl,fr)<lim)f.push([age<8?'warn':'crit','안짱걸음',`발진행각 왼 ${fmt(fl)}°, 오른 ${fmt(fr)}° (또래 평균 ${fmt(N.fpa)}°). ${age<8?'대부분 8세 전후 자연 교정되므로 6개월 간격으로 추적합니다.':'8세 이후에도 남아 있어 소아정형외과 평가를 권장합니다.'}`]);
+  if(Math.max(fl,fr)>N.fpa+2*N.fpaSd)f.push(['warn','팔자걸음',`발진행각 ${fmt(Math.max(fl,fr))}°. 평발·고관절 회전 여부를 함께 확인합니다.`]);
+  if(v.mid>N.midU)f.push([age<6?'neu':'warn',age<6?'생리적 평발 범위':'중족부 하중 과다',age<6?`중족부 하중 ${fmt(v.mid,0)}%. 6세 이전에는 흔하며 아치가 자라면서 줄어듭니다. 통증이 없으면 지켜봅니다.`:`중족부 하중 ${fmt(v.mid,0)}% (또래 상한 ${fmt(N.midU,0)}%). 발 피로나 통증이 있으면 상담합니다.`]);
+  if(v.si>10)f.push(['crit','좌우 비대칭',`SI ${fmt(v.si)}%. 최근 다친 곳이 있는지 확인하고 2주 이상 지속되면 진료를 권장합니다.`]);
+  else if(v.si>5)f.push(['warn','좌우 비대칭 경계',`SI ${fmt(v.si)}% (보폭 ${fmt(v.siL)}%, 딛는 시간 ${fmt(v.siSt)}%). 최근 넘어지거나 발목을 삔 적이 있는지 확인합니다.`]);
+  if(v.cv>N.cvU)f.push(['warn','걸음 리듬 불규칙',`보폭 시간 변동 ${fmt(v.cv)}% (또래 상한 ${fmt(N.cvU)}%). 균형 놀이를 늘리고 추이를 봅니다.`]);
+  if(A.sls&&Math.min(...A.sls)<A.N.sls*.6)f.push(['warn','한발서기 짧음',`왼 ${A.sls[0]}초 / 오른 ${A.sls[1]}초 (또래 참고 ${fmt(A.N.sls,0)}초).`]);
+  if(A.z.speed<-2)f.push(['warn','걸음 속도 느림',`${fmt(v.speed,2)} m/s (또래·키 기준 ${fmt(N.speed,2)} m/s).`]);
+  return f;}
+function allFlags(A){const f=gaitFlags(A),g=A.g;
+  if(g.velS==='warn')f.push(['warn','성장 속도 느림',`최근 1년 ${fmt(g.vel)} cm (기대 약 ${fmt(g.velN)} cm). 6개월 뒤 재측정하고 계속 낮으면 소아내분비 상담을 권장합니다.`]);
+  if(g.bcat[0]!=='ok')f.push([g.bcat[0],g.bcat[1],`BMI ${fmt(g.bmi)} (${fmt(g.bp,0)} 백분위). 체중이 늘면 발바닥 중족부 하중도 커집니다.`]);
+  if(g.footS!=='ok')f.push([g.footS,'인솔 교체',`발가락 여유 ${g.room} mm. ${g.footS==='crit'?'지금 한 치수 올려 주세요.':'곧 교체가 필요합니다.'}`]);
+  if(A.avg<A.tgt*.75)f.push(['warn','활동량 부족',`하루 평균 ${Math.round(A.avg).toLocaleString()}보, 목표의 ${fmt(A.avg/A.tgt*100,0)}%.`]);
+  const order={crit:0,warn:1,neu:2,ok:3};f.sort((a,b)=>order[a[0]]-order[b[0]]);
+  if(!f.length)f.push(['ok','또래 표준 범위','특별히 살펴볼 신호가 없습니다.']);
+  return f;}
+
+/* ---------- kids chips & add form ---------- */
+let cur=store.get('kid','jiwoo');if(!kids.find(k=>k.id===cur))cur=kids[0].id;
+const curKid=()=>kids.find(x=>x.id===cur);
+function renderKids(){const el=$('#kids');
+  el.innerHTML=kids.map(k=>{const a=ageAt(k);return `<button class="kid" aria-pressed="${k.id===cur}" data-id="${k.id}"><span class="av">${k.name[0]}</span><span><span class="nm">${k.name}</span> <span class="sub">${k.sex==='M'?'남':'여'} · ${ageLabel(a)}${SAMPLE.includes(k)?' · 예시':''}</span></span></button>`}).join('')+`<button class="kid add" id="addBtn">+ 아이 추가</button>`;
+  el.querySelectorAll('.kid[data-id]').forEach(b=>b.onclick=()=>selectKid(b.dataset.id));
+  $('#addBtn').onclick=()=>{$('#addPanel').hidden=false;$('#f-name').focus()};}
+function selectKid(id){cur=id;store.set('kid',cur);renderAll();}
+$('#addCancel').onclick=()=>$('#addPanel').hidden=true;
+$('#addForm').addEventListener('submit',e=>{e.preventDefault();
+  const name=$('#f-name').value.trim()||'아이',sex=$('#f-sex').value,birth=$('#f-birth').value,h=+$('#f-h').value,h6=+$('#f-h6').value,w=+$('#f-w').value;
+  const age=ageAt({birth}),N=norms(age,h/100);
+  const k={id:'c'+Date.now(),name,sex,birth,father:+$('#f-fh').value||null,mother:+$('#f-mh').value||null,foot:+$('#f-foot').value,insole:+$('#f-ins').value,steps:10000,seed:hashSeed(name+birth),sls:[Math.round(N.sls),Math.round(N.sls)],
+    heights:(h6?[['2026-03',h6]]:[]).concat([['2026-09',h]]),weights:[['2026-09',w]],
+    gait:{cadence:N.cad,strideRatio:N.sr,swing:N.swing,fpaL:N.fpa,fpaR:N.fpa,heel:1,arch:age<6?1.5:1,rStride:1,rStance:1,cv:Math.max(.015,(N.cvU-1.3)/100)}};
+  const custom=store.get('custom',[]);custom.push(k);store.set('custom',custom);kids.push(k);$('#addPanel').hidden=true;selectKid(k.id);});
+
+/* ---------- small drawing helpers ---------- */
+const SPOS=[[22,18],[20,52],[36,48],[52,58],[52,95],[26,95],[28,140],[44,142]];
+const FOOT='M30,4 C14,4 8,20 9,40 C10,62 18,80 20,100 C22,118 16,132 20,150 C24,166 50,168 54,152 C58,136 58,110 60,90 C62,70 66,50 62,30 C58,10 46,4 30,4 Z';
+function insole(vals,side,scale=1,label='',W=96,H=232){const col=side?'var(--right)':'var(--left)';const tr=side?'':'transform="translate(70,0) scale(-1,1)"';
+  const circles=SPOS.map((p,i)=>{const v=clamp(vals[i]*scale,0,1);return `<circle cx="${p[0]}" cy="${p[1]}" r="${4+10*Math.sqrt(v)}" fill="${col}" fill-opacity="${.18+.8*v}"/>`}).join('');
+  return `<svg viewBox="-4 -4 78 190" width="${W}" height="${H}" role="img" aria-label="${label}"><g ${tr}><path d="${FOOT}" fill="var(--surface-2)" stroke="var(--line)" stroke-width="1.5"/>${circles}</g><text x="35" y="182" text-anchor="middle" font-size="11" fill="var(--muted)">${label}</text></svg>`}
+function ringSvg(v,r=56,c=66,wd=12){const C=2*Math.PI*r;return `<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="${wd}"/><circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--${sev(v)})" stroke-width="${wd}" stroke-linecap="round" stroke-dasharray="${C*v/100} ${C}" transform="rotate(-90 ${c} ${c})"/>`}
+const miniRow=(n,s)=>`<div class="mini"><span>${n}</span><div class="bar"><i style="width:${s}%;background:var(--${sev(s)})"></i></div><span class="num" style="text-align:right">${s}</span></div>`;
+
+/* ---------- HOME ---------- */
+function renderHome(){const k=curKid(),A=analyze(k),{v,N,g}=A;
+  $('#h-eyebrow').textContent=`${k.sex==='M'?'남아':'여아'} · ${ageLabel(A.age)} · 키 ${fmt(A.h*100)} cm · 체중 ${fmt(A.w)} kg`;
+  $('#h-title').textContent=`${k.name}의 발달·성장 현황`;
+  $('#h-score').textContent=A.total;$('#h-ring').innerHTML=ringSvg(A.total);
+  $('#h-grade').innerHTML=pill(sev(A.total),A.total>=80?'양호':A.total>=60?'관찰':'상담 권장');
+  $('#h-minis').innerHTML=miniRow('보행',A.gait)+miniRow('뇌·운동 발달',A.brain)+miniRow('키 성장',A.height)+miniRow('성장 관리',A.manage);
+  $('#h-flags').innerHTML=allFlags(A).slice(0,3).map(([s,t,d])=>`<div class="flag"><span class="s" style="background:var(--${s==='neu'?'muted':s})"></span><p><b>${t}</b> · ${d}</p></div>`).join('');
+  const card=(title,score,kv,cap,chips)=>`<div class="panel dcard"><div class="top"><div><div class="eyebrow">${title}</div><div class="sc" style="color:var(--${sev(score)})">${score}</div></div>${pill(sev(score))}</div><div class="kv">${kv}</div><div class="cap">${cap}</div><div class="chips"><span class="small muted">근거</span>${chips}</div></div>`;
+  $('#h-domains').innerHTML=
+   card('뇌·운동 발달',A.brain,`<div><b>${fmt(A.mat)}세</b><span>보행 성숙 연령 (실제 ${fmt(A.age)}세)</span></div><div><b>${fmt(v.cv)}%</b><span>걸음 리듬 변동 · 상한 ${fmt(N.cvU)}</span></div><div><b>${A.sls[0]} / ${A.sls[1]}초</b><span>한발서기 왼/오른 · 참고 ${fmt(N.sls,0)}</span></div><div><b>${fmt(v.heel,0)}%</b><span>뒤꿈치 딛기</span></div>`,
+     '뇌를 직접 재지 않습니다. 걷기 리듬·균형·발끝 보행 같은 운동 발달 신호를 또래와 비교해 늦어지는 신호를 일찍 알려 드립니다.',chip(16,17,7,15,1))+
+   card('키 성장',A.height,`<div><b>${fmt(g.hp,0)}</b><span>키 백분위</span></div><div><b>${g.vel==null?'–':fmt(g.vel)}</b><span>성장속도 cm/년 · 기대 ${fmt(g.velN)}</span></div><div><b>${g.mph?(A.mphD>0?'+':'')+fmt(A.mphD):'–'}</b><span>부모 기반 목표키 대비 cm</span></div><div><b>${fmt(g.pred)}</b><span>현재 궤도 성인키 cm</span></div>`,
+     '걸음이 키를 키우지는 않습니다. 성장 속도를 추적해 늦어지는 시기를 알려 드리고, 뼈를 튼튼하게 하는 걷기·뛰기 활동을 관리합니다.',chip(14,5,6,2,4))+
+   card('성장 관리',A.manage,`<div><b>${fmt(g.bp,0)}</b><span>BMI 백분위 · ${g.bcat[1]}</span></div><div><b>${Math.round(A.avg).toLocaleString()}</b><span>하루 걸음 · 목표 ${A.tgt.toLocaleString()}</span></div><div><b>${g.room} mm</b><span>인솔 여유 · ${g.months<1?'이번 달 교체':'약 '+fmt(g.months,0)+'개월 뒤 교체'}</span></div><div><b>${fmt(v.mid,0)}%</b><span>중족부 하중 · 상한 ${fmt(N.midU,0)}</span></div>`,
+     '활동량·체중·발 크기를 걸음 데이터와 함께 봅니다. 통증 없는 평발처럼 저절로 좋아지는 경우는 불필요한 교정을 권하지 않습니다.',chip(1,3,13,11,12));
+  $('#h-family').innerHTML=`<tr><th>이름</th><th>나이</th><th class="r">HeyInsole</th><th class="r">보행</th><th class="r">뇌·운동</th><th class="r">키 성장</th><th class="r">성장 관리</th><th>살펴볼 점</th></tr>`+kids.map(kk=>{const B=analyze(kk),f=allFlags(B)[0];const c=s=>`<td class="r num" style="color:var(--${sev(s)})">${s}</td>`;
+    return `<tr class="click" data-kid="${kk.id}"><td><b>${kk.name}</b>${kk.id===cur?' <span class="pill neu">선택</span>':''}</td><td>${ageLabel(B.age)}</td>${c(B.total)}${c(B.gait)}${c(B.brain)}${c(B.height)}${c(B.manage)}<td>${pill(f[0]==='neu'?'neu':f[0],f[1])}</td></tr>`}).join('');
+  $$('#h-family tr[data-kid]').forEach(tr=>tr.onclick=()=>selectKid(tr.dataset.kid));
+}
+
+/* ---------- REPORT (sheet) ---------- */
+function zbar(label,val,unit,z,note,st){const pos=clamp((z+3)/6*100,3,100);const s=st||(Math.abs(z)<=1.5?'ok':Math.abs(z)<=2.5?'warn':'crit');
+  return `<div class="rb"><span>${label}</span><div class="rs"><div class="zones"><i></i><i></i><i></i></div><div class="fill" style="width:${pos}%;background:var(--${s==='neu'?'muted':s})"></div><b class="${pos>80?'inside':''}" style="left:${pos}%">${val}${unit?' '+unit:''}</b></div><span class="ru">${note}</span></div>`}
+const rbhead=(a='표준이하',b='표준',c='표준이상')=>`<div class="rbhead"><span></span><div class="zl"><span>${a}</span><span>${b}</span><span>${c}</span></div><span></span></div>`;
+function spark(vals,labels,w=300,h=90,ymin=0,ymax=100){const X=i=>20+i*(w-40)/(vals.length-1),Y=v=>h-18-(v-ymin)/(ymax-ymin)*(h-30);
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img"><line x1="14" x2="${w-10}" y1="${Y(80)}" y2="${Y(80)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="${w-10}" y="${Y(80)-3}" text-anchor="end" font-size="9" fill="var(--muted)">80</text><polyline points="${vals.map((v,i)=>X(i)+','+Y(v)).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2"/>${vals.map((v,i)=>`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===vals.length-1?4.5:3}" fill="${i===vals.length-1?'var(--accent)':'var(--surface)'}" stroke="var(--accent)" stroke-width="1.5"/><text x="${X(i)}" y="${Y(v)-8}" text-anchor="middle" font-size="10" font-weight="600" fill="var(--ink)">${v}</text><text x="${X(i)}" y="${h-3}" text-anchor="middle" font-size="9.5" fill="var(--muted)">${labels[i]}</text>`).join('')}</svg>`}
+function renderReport(){const k=curKid(),A=analyze(k),{v,N,z,g}=A;
+  const cvz=(v.cv-(N.cvU-1.3))/0.9,siz=(v.si-2.5)/2.5;
+  const heelz=(v.heel-27)/5,midz=(v.mid-(N.midU-8))/4,forez=(v.fore-55)/7;
+  const lo=(a,b)=>a<b*0.95?'lo':'';
+  const sL=v.side[0],sR=v.side[1];
+  const flags=allFlags(A).filter(f=>f[0]!=='ok');
+  const guide=[];
+  if(A.avg<A.tgt)guide.push(`하루 걸음 목표 ${A.tgt.toLocaleString()}보까지 <b>+${Math.round(A.tgt-A.avg).toLocaleString()}보</b> (놀이터 20분 ≈ 2,000보)`);
+  else guide.push('하루 걸음 목표를 채우고 있습니다. 주 3회 이상 뛰기·점프 놀이로 뼈 강화 활동을 이어 가세요.');
+  if(Math.min(...A.sls)<N.sls)guide.push(`한발서기 놀이: 짧은 쪽(${A.sls[0]<A.sls[1]?'왼발':'오른발'})부터 하루 3회`);
+  if(v.heel<15)guide.push('뒤꿈치부터 딛는 걷기 연습, 종아리 스트레칭');
+  guide.push(`인솔 교체: ${g.months<1?'이번 달':'약 '+fmt(g.months,0)+'개월 뒤'} (발 ${k.foot} mm / 인솔 ${k.insole} mm)`);
+  guide.push('다음 측정: 4주 뒤 같은 신발로 40초 이상 걷기');
+  $('#rep').innerHTML=`<div class="sheet">
+  <div class="sheet-h"><div class="t"><small>HEYINSOLE KIDS · 걸음 발달·성장 결과지</small>${k.name}의 발달 리포트</div><div class="small muted">NEWDIC Co., Ltd. · 알고리즘 v2</div></div>
+  <div class="idrow"><div><span>이름</span><b>${k.name}</b></div><div><span>나이</span><b>${ageLabel(A.age)}</b></div><div><span>성별</span><b>${k.sex==='M'?'남':'여'}</b></div><div><span>키</span><b>${fmt(A.h*100)} cm</b></div><div><span>체중</span><b>${fmt(A.w)} kg</b></div><div><span>측정일</span><b>2026.09.28</b></div></div>
+  <div class="sheet-b"><div class="colL">
+    <div class="sec">보행 분석<span>또래 표준 대비 · 분석 걸음 ${v.steps}보</span></div>${rbhead()}
+    ${zbar('분당 걸음수',fmt(v.cadence,0),'보',z.cad,`표준 ${fmt(N.cad,0)}`)}
+    ${zbar('걷는 속도',fmt(v.speed,2),'m/s',z.speed,`표준 ${fmt(N.speed,2)}`)}
+    ${zbar('보폭 ÷ 키',fmt(v.L/A.h,2),'',z.sr,`보폭 ${fmt(v.L,2)} m`)}
+    ${zbar('발 드는 시간',fmt(v.swing),'%',z.swing,`표준 ${fmt(N.swing,0)}%`)}
+    ${zbar('양발 지지',fmt(v.ds),'%',z.ds,`표준 ${fmt(N.ds,0)}%`)}
+    ${zbar('걸음 리듬 변동',fmt(v.cv),'%',cvz,`상한 ${fmt(N.cvU)}%`,v.cv<=N.cvU?'ok':'warn')}
+    ${zbar('좌우 대칭 SI',fmt(v.si),'%',siz,'5% 이하 양호',v.si<=5?'ok':v.si<=10?'warn':'crit')}
+    <div class="sec">발바닥 하중·자세<span>8채널 압력 분담</span></div>${rbhead('낮음','표준','높음')}
+    ${zbar('뒤꿈치 하중',fmt(v.heel,0),'%',heelz,'표준 22~32%',v.heel<8?'crit':v.heel<15?'warn':'ok')}
+    ${zbar('중족부 하중',fmt(v.mid,0),'%',midz,`상한 ${fmt(N.midU,0)}%`,v.mid>N.midU?(A.age<6?'neu':'warn'):'ok')}
+    ${zbar('앞발 하중',fmt(v.fore,0),'%',forez,'표준 48~62%')}
+    ${zbar('발진행각 왼',fmt(sL.fpa),'°',z.fpaL,`표준 ${fmt(N.fpa,0)}±6°`)}
+    ${zbar('발진행각 오른',fmt(sR.fpa),'°',z.fpaR,`표준 ${fmt(N.fpa,0)}±6°`)}
+    <div class="sec">좌우 균형<span>짧은 쪽을 주황색으로 표시</span></div>
+    <div class="seg"><div class="side"><div><span>보폭</span><b class="${lo(sL.L,sR.L)}">${fmt(sL.L,2)} m</b></div><div><span>딛는 시간</span><b>${fmt(sL.stance)}%</b></div><div><span>하중 분담</span><b>${fmt(A.loadL,0)}%</b></div><div><span>발진행각</span><b>${fmt(sL.fpa)}°</b></div><div><span>한발서기</span><b class="${lo(A.sls[0],A.sls[1])}">${A.sls[0]} s</b></div></div>
+      <div style="display:flex;justify-content:center;gap:2px">${insole(A.share[0].s,0,1/Math.max(...A.share[0].s,...A.share[1].s),'왼',52,126)}${insole(A.share[1].s,1,1/Math.max(...A.share[0].s,...A.share[1].s),'오른',52,126)}</div>
+      <div class="side"><div><span>보폭</span><b class="${lo(sR.L,sL.L)}">${fmt(sR.L,2)} m</b></div><div><span>딛는 시간</span><b>${fmt(sR.stance)}%</b></div><div><span>하중 분담</span><b>${fmt(100-A.loadL,0)}%</b></div><div><span>발진행각</span><b>${fmt(sR.fpa)}°</b></div><div><span>한발서기</span><b class="${lo(A.sls[1],A.sls[0])}">${A.sls[1]} s</b></div></div></div>
+    <div class="sec">성장 분석<span>2017 소아청소년 성장도표 기준 백분위</span></div>${rbhead('하위','표준','상위')}
+    ${zbar('키',fmt(g.h),'cm',g.hz,`${fmt(g.hp,0)} 백분위`,g.hp<3||g.hp>97?'warn':'ok')}
+    ${zbar('체중',fmt(g.w),'kg',g.wz,`${fmt(g.wp,0)} 백분위`)}
+    ${zbar('BMI',fmt(g.bmi),'',g.bz,`${fmt(g.bp,0)} 백분위 · ${g.bcat[1]}`,g.bcat[0])}
+    ${zbar('성장 속도',g.vel==null?'–':fmt(g.vel),'cm/년',g.vel==null?0:(g.vel-g.velN)/1.2,`기대 ${fmt(g.velN)}`,g.velS==='warn'?'warn':'ok')}
+    <div class="sec">변화 추이<span>월별 측정</span></div>
+    <div class="grid g2" style="gap:10px"><div><div class="small muted">HeyInsole 점수</div>${spark(A.hist,['6월','7월','8월','9월'],300,90,Math.max(0,Math.min(...A.hist)-15),108)}</div>
+    <div><div class="small muted">키 (cm)</div>${spark(k.heights.map(x=>x[1]),k.heights.map(x=>x[0].slice(2).replace('-','.')),300,90,Math.floor(Math.min(...k.heights.map(x=>x[1]))-2),Math.ceil(Math.max(...k.heights.map(x=>x[1]))+2)).replace(/<line[^>]*\/><text[^>]*>80<\/text>/,'')}</div></div>
+  </div>
+  <div class="colR">
+    <div class="bigscore"><div class="small muted">HeyInsole 점수</div><b>${A.total}</b><div class="small muted">/ 100 · 80점 이상 양호</div></div>
+    <div class="rbox"><h4>영역별 점수</h4><div class="minis">${miniRow('보행',A.gait)}${miniRow('뇌·운동 발달',A.brain)}${miniRow('키 성장',A.height)}${miniRow('성장 관리',A.manage)}</div></div>
+    <div class="rbox"><h4>보행 성숙 연령</h4><div class="row" style="justify-content:space-between"><span class="num" style="font-size:22px;font-weight:600">${fmt(A.mat)}세</span><span class="muted">실제 ${fmt(A.age)}세</span></div><div class="small muted">분당 걸음수·보폭·리듬 변동·양발 지지가 가장 잘 맞는 또래 나이</div></div>
+    <div class="rbox"><h4>살펴볼 점</h4>${flags.length?`<ul>${flags.slice(0,5).map(f=>`<li>${pill(f[0]==='neu'?'neu':f[0],f[1])} ${f[2]}</li>`).join('')}</ul>`:'<p style="margin:0">또래 표준 범위입니다.</p>'}</div>
+    <div class="rbox"><h4>생활 가이드</h4><ul>${guide.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    <div class="rbox"><h4>측정 정보</h4><div class="small">HeyInsole 스마트 인솔 · FSR 8채널 · 9축 IMU · 100 Hz<br>분석 알고리즘 v2 · 40초 자유 보행 · 첫/끝 걸음 제외<br>좌 ${sL.n} · 우 ${sR.n} 보폭 분석</div></div>
+  </div></div>
+  <div class="sheet-f"><span>이 결과지는 발달·성장 선별용이며 의학적 진단이 아닙니다. 적색 항목은 전문의 상담을 권장합니다.</span><span>예시 데이터 · HeyInsole by NEWDIC</span></div></div>`;
+}
+
+/* ---------- GROWTH ---------- */
+function chart({xmin,xmax,ymin,ymax,ystep,xlab,ylab,bands,lines,pts,extra}){
+  const W=560,H=300,L=44,R=14,T=12,B=36,sx=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R),sy=y=>T+(1-(y-ymin)/(ymax-ymin))*(H-T-B);
+  let g='';for(let y=Math.ceil(ymin/ystep)*ystep;y<=ymax;y+=ystep)g+=`<line x1="${L}" x2="${W-R}" y1="${sy(y)}" y2="${sy(y)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${sy(y)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${y}</text>`;
+  for(let x=xmin;x<=xmax;x+=2)g+=`<text x="${sx(x)}" y="${H-B+16}" text-anchor="middle" font-size="11" fill="var(--muted)">${x}</text>`;
+  g+=`<text x="${W-R}" y="${H-4}" text-anchor="end" font-size="11" fill="var(--muted)">${xlab}</text><text x="${L}" y="${T-2}" font-size="11" fill="var(--muted)">${ylab}</text>`;
+  for(const b of bands){const top=b.hi.map(p=>`${sx(p[0])},${sy(p[1])}`),bot=b.lo.map(p=>`${sx(p[0])},${sy(p[1])}`).reverse();g+=`<polygon points="${top.concat(bot).join(' ')}" fill="${b.fill}"/>`}
+  for(const l of lines)g+=`<polyline points="${l.p.map(p=>`${sx(p[0])},${sy(p[1])}`).join(' ')}" fill="none" stroke="${l.c}" stroke-width="${l.w||1.5}" ${l.dash?'stroke-dasharray="4 4"':''}/>`;
+  if(pts.length)g+=`<polyline points="${pts.map(p=>`${sx(p[0])},${sy(p[1])}`).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2"/>`+pts.map((p,i)=>`<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="${i===pts.length-1?5:3.5}" fill="${i===pts.length-1?'var(--accent)':'var(--surface)'}" stroke="var(--ink)" stroke-width="1.5"/>`).join('')+`<text x="${sx(last(pts)[0])+8}" y="${sy(last(pts)[1])-8}" font-size="12" font-weight="600" fill="var(--ink)">${last(pts)[1]}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img">${g}${extra?extra(sx,sy):''}</svg>`}
+function renderGrowth(){const k=curKid(),A=analyze(k),g=A.g,R=REF[k.sex];
+  const band=(tab,sdf,m)=>A15.map(a=>[a,interp(tab,a)+m*sdf(a)]);
+  const hsd=a=>interp(R.hsd,a),wsd=a=>interp(R.w,a)*interp(WCV,a);
+  const hp=k.heights.map(([d,v])=>[+ageAt(k,ym(d)).toFixed(2),v]),wp=k.weights.map(([d,v])=>[+ageAt(k,ym(d)).toFixed(2),v]);
+  $('#g-hchart').innerHTML=chart({xmin:3,xmax:15,ymin:80,ymax:190,ystep:20,xlab:'나이(세)',ylab:'cm',
+    bands:[{hi:band(R.h,hsd,2),lo:band(R.h,hsd,-2),fill:'var(--band)'}],
+    lines:[{p:band(R.h,hsd,0),c:'var(--accent)',w:2},{p:band(R.h,hsd,1),c:'var(--accent)',w:1,dash:1},{p:band(R.h,hsd,-1),c:'var(--accent)',w:1,dash:1}],pts:hp,
+    extra:(sx,sy)=>g.mph?`<line x1="${sx(15)-6}" x2="${sx(15)}" y1="${sy(Math.min(188,g.mph))}" y2="${sy(Math.min(188,g.mph))}" stroke="var(--warn)" stroke-width="3"/><text x="${sx(15)-10}" y="${sy(Math.min(188,g.mph))-6}" text-anchor="end" font-size="11" fill="var(--warn)">부모 기반 목표키 ${fmt(g.mph)}</text>`:''});
+  $('#g-wchart').innerHTML=chart({xmin:3,xmax:15,ymin:10,ymax:80,ystep:10,xlab:'나이(세)',ylab:'kg',bands:[{hi:band(R.w,wsd,2),lo:band(R.w,wsd,-2),fill:'var(--band)'}],lines:[{p:band(R.w,wsd,0),c:'var(--accent)',w:2}],pts:wp});
+  $('#g-body').innerHTML=`<div><b>${fmt(g.h)}</b><span>키 cm · ${fmt(g.hp,0)} 백분위</span></div><div><b>${fmt(g.w)}</b><span>체중 kg · ${fmt(g.wp,0)} 백분위</span></div>
+   <div><b>${fmt(g.bmi)}</b><span>BMI · ${fmt(g.bp,0)} 백분위 ${pill(g.bcat[0],g.bcat[1])}</span></div><div><b>${g.vel==null?'–':fmt(g.vel)}</b><span>성장속도 cm/년 (기대 ${fmt(g.velN)}) ${pill(g.velS,g.velS==='ok'?'정상':'관찰')}</span></div>
+   <div><b>${g.mph?fmt(g.mph):'–'}</b><span>부모 기반 목표키 ±8.5</span></div><div><b>${fmt(g.pred)}</b><span>현재 백분위 유지 시 성인키</span></div>`;
+  $('#g-foot').innerHTML=`<svg viewBox="0 0 300 70" width="100%" role="img" aria-label="발 길이와 인솔 길이"><rect x="10" y="18" width="270" height="26" rx="13" fill="var(--surface-2)" stroke="var(--line)"/><rect x="10" y="18" width="${270*k.foot/k.insole}" height="26" rx="13" fill="var(--${g.footS})" fill-opacity=".35"/><text x="16" y="36" font-size="12" fill="var(--ink)">발 ${k.foot} mm</text><text x="276" y="36" font-size="12" text-anchor="end" fill="var(--ink)">인솔 ${k.insole}</text><text x="10" y="62" font-size="11" fill="var(--muted)">권장 여유 10~12 mm · 현재 ${g.room} mm</text></svg>
+   <div class="row" style="margin-top:6px">${pill(g.footS,g.footS==='ok'?'여유 충분':g.footS==='warn'?'곧 교체':'지금 교체')}<span class="small muted">발 성장 약 ${g.rate} mm/월 → ${g.months<1?'이번 달 안에':'약 '+fmt(g.months,0)+'개월 뒤'} 여유 6 mm 도달</span></div>`;
+  const act=A.act,tgt=A.tgt,avg=A.avg,mx=Math.max(tgt*1.35,...act.map(a=>a.steps));const W=320,H=150,bw=(W-30)/14,ty=H-18-(tgt/mx)*(H-30);
+  $('#g-act').innerHTML=`<div class="row" style="justify-content:space-between"><span class="num" style="font-size:18px;font-weight:600">${Math.round(avg).toLocaleString()}</span><span class="small muted">하루 평균 걸음 · 목표 ${tgt.toLocaleString()}</span></div>
+   <svg viewBox="0 0 ${W} ${H}" width="100%" role="img">${act.map((a,i)=>{const hh=(a.steps/mx)*(H-30);return `<rect x="${24+i*bw+2}" y="${H-18-hh}" width="${bw-4}" height="${hh}" rx="2" fill="${a.steps>=tgt?'var(--accent)':'var(--surface-2)'}" stroke="var(--accent)" stroke-opacity=".5"/>`}).join('')}
+   <line x1="22" x2="${W}" y1="${ty}" y2="${ty}" stroke="var(--warn)" stroke-dasharray="4 3"/><text x="20" y="${ty+4}" font-size="10" text-anchor="end" fill="var(--warn)">목표</text>
+   <text x="24" y="${H-4}" font-size="10" fill="var(--muted)">${act[0].d.getMonth()+1}/${act[0].d.getDate()}</text><text x="${W}" y="${H-4}" font-size="10" text-anchor="end" fill="var(--muted)">오늘</text></svg>
+   <p class="small muted" style="margin:.3em 0 0">목표 달성 ${act.filter(a=>a.steps>=tgt).length}/14일 · WHO 권고(하루 60분 중고강도 활동)에 맞춘 걸음 목표</p>`;
+  const c=[];const v=A.v,N=A.N;
+  c.push(['키 백분위',g.hp<3||g.hp>97?'warn':'ok',fmt(g.hp,0),g.hp<3?'3백분위 미만: 저신장 평가 대상입니다.':g.hp>97?'97백분위 초과: 성조숙 여부를 함께 봅니다.':'또래 기준 정상 범위입니다.']);
+  c.push(['성장 속도',g.velS,g.vel==null?'–':fmt(g.vel)+' cm/년',g.velS==='ok'?`기대치(약 ${fmt(g.velN)} cm/년)에 맞습니다.`:`기대치 약 ${fmt(g.velN)} cm/년보다 느립니다. 6개월 뒤 재측정하고 계속 낮으면 소아내분비 상담을 권장합니다.`]);
+  if(g.mph)c.push(['목표키 대비',Math.abs(A.mphD)>8.5?'warn':'ok',(A.mphD>0?'+':'')+fmt(A.mphD)+' cm',Math.abs(A.mphD)>8.5?'현재 궤도가 부모 기반 목표 범위(±8.5 cm)를 벗어납니다.':'현재 성장 궤도가 부모 기반 목표 범위 안에 있습니다.']);
+  c.push(['BMI',g.bcat[0],fmt(g.bmi),g.bcat[1]==='정상'?'정상 체중 범위입니다.':g.bcat[1]==='과체중'?'85백분위 이상: 활동량과 간식 습관을 점검합니다.':g.bcat[1]==='비만'?'95백분위 이상: 소아청소년과 상담을 권장합니다.':'5백분위 미만: 영양 상태를 확인합니다.']);
+  c.push(['하루 활동량',avg>=tgt?'ok':avg>=tgt*.75?'warn':'crit',Math.round(avg).toLocaleString()+'보',avg>=tgt?'권장 활동량을 채우고 있습니다.':`권장(${tgt.toLocaleString()}보)의 ${fmt(avg/tgt*100,0)}% 수준입니다.`]);
+  c.push(['인솔·신발 크기',g.footS,g.room+' mm',g.footS==='ok'?'발가락 여유가 충분합니다.':'발가락 여유가 부족합니다. 신발과 인솔을 한 치수 올립니다.']);
+  c.push(['발끝 보행',v.heel<8&&v.fic>50?'crit':'ok',fmt(v.heel,0)+'% 뒤꿈치',v.heel<8?'대부분의 걸음이 앞발로 닿습니다.':'뒤꿈치 딛기가 정상입니다.']);
+  c.push(['한발서기',Math.min(...A.sls)<N.sls*.6?'warn':'ok',A.sls.join(' / ')+' 초',`또래 참고 ${fmt(N.sls,0)}초`]);
+  c.push(['좌우 대칭',v.si>10?'crit':v.si>5?'warn':'ok',fmt(v.si)+'%',v.si>5?'한쪽 보폭·딛는 시간이 다릅니다.':'좌우 균형이 좋습니다.']);
+  $('#g-check').innerHTML=`<tr><th>항목</th><th>판정</th><th class="r">값</th><th>설명</th></tr>`+c.map(r=>`<tr><td>${r[0]}</td><td>${pill(r[1],r[1]==='ok'?'정상':r[1]==='warn'?'관찰':r[1]==='crit'?'상담 권장':'참고')}</td><td class="r num">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+}
+
+/* ---------- ALGO ---------- */
+function renderAlgo(){
+  const L=(s,t)=>`<span class="pill ${s}">${t}</span>`;
+  const rows=[
+   ['하루 걸음·활동 강도','뇌·운동 / 성장 관리','체중부하 활동은 성장기 골량을 늘리며 사춘기 전후 효과가 큼. 신체활동은 인지 기능과도 연관',[1,2,3,4],L('ok','강함')],
+   ['보행 성숙 연령 · 리듬 변동','뇌·운동 발달','보폭 시간 변동은 나이가 들며 줄고 7세 이후에도 성숙이 이어짐',[16,17],L('neu','중간')],
+   ['발끝 보행 감지','뇌·운동 발달','5.5세 약 2%, 신경발달 진단 아동에서 더 흔하고 대부분 10세 전 소실',[7,8,15],L('neu','중간')],
+   ['발진행각 추적','보행','안짱걸음은 대부분 자연 교정되며 교정 신발·보조기는 효과 없음',[9,10],L('neu','중간')],
+   ['중족부 하중 (평발 지표)','성장 관리','미취학 아동의 평발은 흔하고 나이 들며 감소. 통증 없는 평발 교정 인솔은 근거 부족',[11,12],L('neu','중간')],
+   ['BMI·발바닥 하중 연계','성장 관리','과체중 아동은 중족부·앞발 하중과 접촉 면적이 커짐',[13],L('neu','중간')],
+   ['키 백분위·성장 속도','키 성장','국가 성장도표 기준 백분위와 성장 속도 추적',[14],L('ok','표준 도구')],
+   ['키 성장 촉진 효과','키 성장','운동량이 최종 키를 바꾼다는 근거는 없음 → 추적·관리로만 사용',[5,6],L('warn','효과 주장 안 함')],
+   ['웨어러블 측정 정확도','전체','아동 대상 관성센서 측정은 시공간 변수에서 대체로 양호. HeyInsole 실측 검증 진행 예정',[18],L('warn','자체 검증 필요')]];
+  $('#a-evid').innerHTML=`<tr><th>HeyInsole 지표</th><th>영역</th><th>근거 요약</th><th>문헌</th><th>근거 수준</th></tr>`+rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td><div class="chips" style="margin:0">${chip(...r[3])}</div></td><td>${r[4]}</td></tr>`).join('');
+  $('#a-refs').innerHTML=REFS.map((r,i)=>`<li id="ref-${i+1}">${r[0]}${r[1]?` <a href="${r[1]}" target="_blank" rel="noopener">링크</a>`:''}</li>`).join('');
+}
+
+/* ---------- VERIFY (report) ---------- */
+function renderVerify(){
+  const subs=kids.map(k=>{const A=analyze(k);return {name:k.name,sub:`${ageLabel(A.age)} · ${fmt(A.w)} kg`,v:A.v,b:A.b,t:A.truth}});
+  {const ad={height:1.75,weight:72,cadence:112,strideRatio:.82,swing:39,fpaL:8,fpaR:8,heel:1,arch:1,rStride:1,rStance:1,cv:.02};
+   const s=simulate(ad,40,5),v=analyzeV2(s),b=analyzeLegacy(s),tr=s.feet.flatMap(f=>f.truth.filter(t=>t.hs>=2&&t.hs<s.dur-2));
+   subs.push({name:'성인 참고',sub:'40세 · 72 kg',v,b,t:{L:mean(tr.map(t=>t.L)),cad:120/mean(tr.map(t=>t.T)),steps:s.feet.reduce((a,f)=>a+f.truth.filter(t=>t.hs>=2).length,0),fpaL:8,fpaR:8}});}
+  const det=(n,t)=>Math.max(0,1-Math.abs(n-t)/t)*100;
+  const V={det:mean(subs.map(s=>det(s.v.steps,s.t.steps))),L:mean(subs.map(s=>Math.abs(s.v.L/s.t.L-1)*100)),cad:mean(subs.map(s=>Math.abs(s.v.cadence-s.t.cad))),fpa:mean(subs.flatMap(s=>[Math.abs(s.v.side[0].fpa-s.t.fpaL),Math.abs(s.v.side[1].fpa-s.t.fpaR)]))};
+  const Bok=subs.filter(s=>!s.b.fail);
+  const B={det:mean(subs.map(s=>det(s.b.detected,s.t.steps))),L:Bok.length?mean(Bok.map(s=>Math.abs(s.b.L/s.t.L-1)*100)):NaN,fail:subs.length-Bok.length};
+  const kpi=(t,val,unit,target,pass,vs)=>`<div class="kpi"><span>${t}</span><b>${val}<small style="font-size:13px"> ${unit}</small></b> ${pill(pass?'ok':'crit',pass?'기준 충족':'미달')}<div class="vs">목표 ${target}<br>${vs}</div></div>`;
+  const e=(x,t)=>fmt((x/t-1)*100,1)+'%';
+  $('#ver').innerHTML=`<div class="sheet">
+  <div class="sheet-h"><div class="t"><small>HEYINSOLE · ALGORITHM VERIFICATION</small>HeyInsole v2 알고리즘 성능 검증 리포트</div><div class="small muted">문서 NDC-HI-VR-2609 · 2026.09.28</div></div>
+  <div class="idrow"><div><span>시험 방식</span><b>신호 모델</b></div><div><span>대상</span><b>${subs.length}명</b></div><div><span>체중 범위</span><b>${fmt(Math.min(...kids.map(k=>last(k.weights)[1])),0)}–72 kg</b></div><div><span>시험 시간</span><b>40 s/인</b></div><div><span>샘플링</span><b>100 Hz</b></div><div><span>비교 방식</span><b>고정 임계값</b></div></div>
+  <div class="sheet-b"><div class="colL">
+    <div class="sec">핵심 성능<span>HeyInsole v2 · 전 대상 평균</span></div>
+    <div class="kpis">${kpi('걸음 검출률',fmt(V.det,1),'%','≥ 95%',V.det>=95,`고정 임계값 방식 ${fmt(B.det,1)}%`)}${kpi('보폭 길이 오차',fmt(V.L,2),'%','≤ 5%',V.L<=5,`고정 임계값 방식 ${isNaN(B.L)?'–':fmt(B.L,1)+'%'} (${B.fail}명 측정 불가)`)}${kpi('분당 걸음수 오차',fmt(V.cad,1),'보/분','≤ 3',V.cad<=3,'')}${kpi('발진행각 오차',fmt(V.fpa,2),'°','≤ 3°',V.fpa<=3,'고정 임계값 방식: 방향 구분 불가')}</div>
+    <div class="sec">대상별 결과<span>정답값은 신호 모델에 입력한 실제 보행 파라미터</span></div>
+    <div class="tbl"><table style="min-width:760px"><tr><th>대상</th><th class="r">걸음 정답</th><th class="r">HeyInsole</th><th class="r">고정 임계값</th><th class="r">보폭 정답</th><th class="r">HeyInsole</th><th class="r">고정 임계값</th><th class="r">발각 정답</th><th class="r">HeyInsole</th></tr>
+    ${subs.map(s=>`<tr><td><b>${s.name}</b><br><span class="small muted">${s.sub}</span></td><td class="r num">${s.t.steps}</td><td class="r num win">${s.v.steps}</td><td class="r num">${s.b.detected}</td><td class="r num">${fmt(s.t.L,2)}</td><td class="r num win">${fmt(s.v.L,2)}<br><span class="small">${e(s.v.L,s.t.L)}</span></td><td class="r num">${s.b.fail?'측정 불가':fmt(s.b.L,2)+'<br><span class="small">'+e(s.b.L,s.t.L)+'</span>'}</td><td class="r num">${s.t.fpaL}/${s.t.fpaR}</td><td class="r num win">${fmt(s.v.side[0].fpa)}/${fmt(s.v.side[1].fpa)}</td></tr>`).join('')}</table></div>
+    <div class="sec">결과 해석</div>
+    <ul class="small" style="margin:0;padding-left:1.2em">
+      <li>절대 ADC 값으로 접지를 판정하는 고정 임계값 방식은 체중 30 kg 이하 아이에서 뒤꿈치 하중이 기준에 못 미쳐 걸음을 거의 잡지 못했습니다. HeyInsole은 아이 본인의 최대 하중을 기준으로 삼아 모든 체중에서 같은 성능을 냈습니다.</li>
+      <li>고역통과 필터 후 이중적분하는 보폭 추정은 성인에서도 큰 오차가 남았습니다. HeyInsole은 자세 보정과 ZUPT로 보폭 오차를 1% 안쪽으로 줄였습니다.</li>
+      <li>발진행각은 부호가 있는 각도로 추정되어 안짱걸음(−)과 팔자걸음(+)을 구분합니다.</li>
+    </ul>
+  </div>
+  <div class="colR">
+    <div class="bigscore"><div class="small muted">목표 기준 충족</div><b>${[V.det>=95,V.L<=5,V.cad<=3,V.fpa<=3].filter(Boolean).length}/4</b><div class="small muted">신호 모델 검증 단계</div></div>
+    <div class="rbox"><h4>시험 조건</h4><ul><li>아이 체중에 비례한 FSR 8채널 하중</li><li>최소저크 궤적 발 운동, 좌우 위상 결합</li><li>센서 장착 기울기 2°, 자이로 스케일 오차 2%</li><li>가속도·자이로 바이어스와 백색잡음</li><li>보폭 시간 변동 1.5~6%</li></ul></div>
+    <div class="rbox"><h4>비교 방식 정의</h4><div class="small">고정 임계값 방식: 40 Hz, 뒤꿈치 ADC 400 / 앞발 이동평균 150 이상을 접지로 판정, 고역통과(α 0.963) 후 가속도 크기 이중적분으로 보폭 추정. 일반적인 1세대 인솔 방식을 재현한 참조 구현입니다.</div></div>
+    <div class="rbox"><h4>다음 검증 단계</h4><ul><li><b>실측 타당도</b> 3~12세 40~60명, 압력 보행판·동작분석과 동시 측정 (ICC, Bland-Altman)</li><li><b>선별 정확도</b> 소아정형외과 외래 100~150명, 민감도·특이도</li><li><b>효과 연구</b> 6~11세 120명 12개월, 활동량·골강도·BMI</li></ul></div>
+  </div></div>
+  <div class="sheet-f"><span>본 결과는 신호 모델 기반 사전 검증이며 실제 인솔 실측 결과가 아닙니다. 실측 검증 후 수치가 달라질 수 있습니다.</span><span>HeyInsole by NEWDIC</span></div></div>`;
+}
+
+/* ---------- LIVE (footprints · timeline · stream · fall) ---------- */
+const P={sim:null,t:0,play:true,speed:1,last:null,fallT:null,stage:-1,imp:null,rot:0,quiet:0,alerted:false,maxL:[1,1],idx:0,metT:0,log:[],cam:null,kid:null};
+function liveInit(){const k=curKid(),A=analyze(k);P.k=k;P.kid=k.id;P.A=A;P.p=A.p;P.sim=simulate(A.p,60,k.seed);P.fallT=null;P.t=0;P.cam=null;liveResetDet();
+  const txt=`${k.name} · ${ageLabel(A.age)} · ${fmt(A.w)} kg · 60초 반복`;$('#w-sub').textContent=txt;P.log=[];logL('측정 시작 · 좌/우 인솔 연결');}
+function liveResetDet(){const s=P.sim;const st=s.feet.map(F=>detectStance(F,0,s.N));P.st=st.map(x=>x.st);P.ev=st.map(x=>x.ev.filter(e=>e.type==='HS').map(e=>e.i));
+  P.maxL=s.feet.map(F=>{let m=1;for(let i=0;i<Math.min(s.N,1000);i++)m=Math.max(m,fsrSum(F,i));return m});
+  const S=s.feet.map(F=>analyzeFoot(F,0,s.N).strides);P.prints=[];
+  const l0=S[0][0],r0=S[1][0];let xs=[0,(r0&&l0)?(r0.a>l0.a?l0.L/2:-l0.L/2):0];
+  S.forEach((arr,f)=>{let x=xs[f];arr.forEach(st=>{P.prints.push({f,x,a:st.a,t:st.t,fpa:st.fpa,L:st.L});x+=st.L})});
+  P.prints.sort((a,b)=>a.a-b.a);P.meanL=mean(P.prints.map(p=>p.L))||1;
+  P.stage=-1;P.imp=null;P.rot=0;P.quiet=0;P.alerted=false;P.idx=0;P.metT=0;$('#l-alert').hidden=true;$$('#l-stage div').forEach(d=>d.classList.remove('on'));}
+function logL(t){const s=`${String(Math.floor(P.t/60)).padStart(2,'0')}:${(P.t%60).toFixed(1).padStart(4,'0')}  ${t}`;P.log.unshift(s);P.log=P.log.slice(0,40);$('#l-log').innerHTML=P.log.map(x=>`<div>${x}</div>`).join('')}
+function setStage(n){P.stage=n;$$('#l-stage div').forEach((d,i)=>d.classList.toggle('on',i<=n))}
+function fallStep(i){const s=P.sim,F=s.feet;const svm=Math.min(...F.map(f=>Math.hypot(f.ax[i],f.ay[i],f.az[i])))/G;const t=i/FS;
+  if(P.stage<0&&svm>2.5){setStage(0);P.imp=t;P.rot=0;logL(`① 충격 감지 ${fmt(svm,1)} g`);}
+  if(P.stage===0){P.rot+=Math.hypot(F[0].gy[i],F[0].gz[i])*DT;
+    if(P.rot>0.87){setStage(1);logL(`② 자세 변화 ${fmt(P.rot*57.3,0)}°`);}
+    else if(t-P.imp>1.5){logL('걸려 넘어질 뻔함 1회 (회복)');P.stage=-1;$$('#l-stage div').forEach(d=>d.classList.remove('on'));}}
+  if((P.stage===1||P.stage===2)&&!P.alerted&&t-P.imp>8&&P.quiet===0){logL('자세 회복 · 판정 해제');P.stage=-1;$$('#l-stage div').forEach(d=>d.classList.remove('on'));}
+  if(P.stage===1||P.stage===2){const low=F.every((f,j)=>fsrSum(f,i)<0.05*P.maxL[j]);
+    if(low){P.quiet+=DT;if(P.stage===1){setStage(2);logL('③ 양발 하중 소실');}}else P.quiet=0;
+    if(P.quiet>3&&!P.alerted){setStage(3);P.alerted=true;logL('④ 3초 무동작 → 보호자 알림 대상');
+      $('#l-alert').hidden=false;$('#l-alert').textContent=`넘어짐 확정: ${P.k.name} · 충격 후 ${fmt(t-P.imp,1)}초. 보호자 알림·위치 전송 단계입니다 (데모에서는 발송하지 않음).`;}}}
+function prepCanvas(cv,h){const dpr=window.devicePixelRatio||1,w=cv.clientWidth;if(!w)return null;if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);return {c,w,h}}
+const FOOTP=typeof Path2D!=='undefined'?new Path2D(FOOT):null;
+function drawFootprints(cv,H){const o=prepCanvas(cv,H);if(!o)return;const {c,w,h}=o;const s=P.sim,i=Math.min(s.N-1,Math.floor(P.t*FS));
+  const col={l:css('--left'),r:css('--right'),m:css('--muted'),line:css('--line'),s2:css('--surface-2'),ink:css('--ink'),acc:css('--accent')};
+  const ppm=w/((w<700?2.6:3.2)*P.meanL);const vis=P.prints.filter(p=>p.a<=i);const lastX=vis.length?vis[vis.length-1].x:0;
+  const target=lastX-(w*0.62)/ppm;P.cam=P.cam==null?target:P.cam+(target-P.cam)*0.06;
+  c.fillStyle=col.s2;c.fillRect(0,h*0.12,w,h*0.72);
+  c.strokeStyle=col.line;c.fillStyle=col.m;c.font='10px '+css('--sans');c.lineWidth=1;
+  for(let m=Math.floor(P.cam*2)/2;m<P.cam+w/ppm;m+=0.5){const X=(m-P.cam)*ppm;c.beginPath();c.moveTo(X+.5,h*0.84);c.lineTo(X+.5,h*0.84+(Math.abs(m%1)<.01?8:4));c.stroke();if(Math.abs(m%1)<.01)c.fillText(m.toFixed(0)+' m',X+3,h*0.84+16)}
+  const y0=h*0.48,off=clamp(0.06*P.A.h*ppm,14,40),len=clamp((P.k.foot/1000)*ppm,24,90),scl=len/170;
+  const heelF=clamp(P.A.v.heel/27,0.08,1);
+  vis.forEach((p,j)=>{const X=(p.x-P.cam)*ppm;if(X<-60||X>w+60)return;const Y=y0+(p.f?off:-off);const ang=(p.f?1:-1)*p.fpa*Math.PI/180;
+    const active=i>=p.a&&i<=p.t;const age=vis.length-1-j;const alpha=active?1:Math.max(.18,.85-age*.07);
+    c.save();c.translate(X,Y);c.rotate(ang);c.scale(scl,scl*(p.f?1:-1));c.rotate(Math.PI/2);c.translate(-35,-85);
+    c.globalAlpha=alpha;c.fillStyle=p.f?col.r:col.l;c.globalAlpha=alpha*(active?.22:.16);c.fill(FOOTP);c.globalAlpha=alpha;
+    c.lineWidth=1.2/scl;c.strokeStyle=p.f?col.r:col.l;c.stroke(FOOTP);
+    const F=s.feet[p.f];
+    SPOS.forEach((q,n)=>{let v;if(active)v=clamp(F.fsr[n][i]/(700*Math.max(.3,P.A.w/70)),0,1);else v=clamp(P.A.share[p.f].s[n]*6,0,1)*(n>=6?heelF:1);
+      if(v<.03)return;c.beginPath();c.arc(q[0],q[1],5+11*Math.sqrt(v),0,Math.PI*2);c.globalAlpha=alpha*(.2+.75*v);c.fillStyle=p.f?col.r:col.l;c.fill()});
+    c.restore();c.globalAlpha=1;
+    if(active){c.fillStyle=p.f?col.r:col.l;c.font='600 11px '+css('--sans');c.fillText(`${p.f?'오른':'왼'} ${fmt(p.L,2)} m · ${fmt(p.fpa,0)}°`,X-30,p.f?Y+off+len*0.2+6:Y-off-len*0.2);}
+  });
+  c.globalAlpha=1;c.fillStyle=col.ink;c.font='600 12px '+css('--sans');
+  c.fillText(`걸음 ${vis.length} · 평균 보폭 ${fmt(P.A.v.L,2)} m · ${fmt(P.A.v.cadence,0)}보/분`,8,16);
+  if(P.fallT!=null&&P.t>=P.fallT){c.fillStyle=css('--crit');c.fillText('넘어짐 발생',w-90,16)}
+}
+function drawTimeline(cv,H){const o=prepCanvas(cv,H);if(!o)return;const {c,w,h}=o;const s=P.sim,win=4,i1=Math.min(s.N-1,Math.floor(P.t*FS)),i0=Math.max(0,i1-win*FS);const X=i=>70+(i-(i1-win*FS))/(win*FS)*(w-76);
+  const col=[css('--left'),css('--right')],acc=css('--accent'),m=css('--muted');c.font='11px '+css('--sans');c.fillStyle=m;c.fillText('왼발',8,24);c.fillText('오른발',8,58);c.fillText('양발',8,84);
+  [0,1].forEach(f=>{let st=null;for(let i=i0;i<=i1+1;i++){const on=i<=i1&&P.st[f][i];if(on&&st==null)st=i;if(!on&&st!=null){c.fillStyle=col[f];c.globalAlpha=.8;c.fillRect(X(st),f?44:10,X(i)-X(st),20);st=null}}});
+  c.globalAlpha=1;let st=null;for(let i=i0;i<=i1+1;i++){const on=i<=i1&&P.st[0][i]&&P.st[1][i];if(on&&st==null)st=i;if(!on&&st!=null){c.fillStyle=acc;c.fillRect(X(st),74,X(i)-X(st),12);st=null}}
+  c.strokeStyle=css('--line');for(let s2=Math.ceil(i0/FS);s2<=i1/FS;s2++){const x=X(s2*FS);c.beginPath();c.moveTo(x+.5,6);c.lineTo(x+.5,88);c.stroke()}
+}
+function drawStream(){const o=prepCanvas($('#l-canvas'),300);if(!o)return;const {c,w,h}=o;
+  const s=P.sim,win=5,i1=Math.min(s.N-1,Math.floor(P.t*FS)),i0=Math.max(0,i1-win*FS),X=i=>(i-(i1-win*FS))/(win*FS)*w;
+  const lanes=[[0,130],[140,80],[230,70]];c.font='11px '+css('--sans');
+  const col={l:css('--left'),r:css('--right'),a:css('--accent'),m:css('--muted'),line:css('--line')};
+  lanes.forEach(([y,hh])=>{c.strokeStyle=col.line;c.lineWidth=1;c.beginPath();c.moveTo(0,y+hh+.5);c.lineTo(w,y+hh+.5);c.stroke()});
+  const mx=Math.max(P.maxL[0],P.maxL[1])*1.1;
+  const plot=(fn,y,hh,lo,hi,color)=>{c.strokeStyle=color;c.lineWidth=1.5;c.beginPath();for(let i=i0;i<=i1;i++){const v=fn(i);const yy=y+hh-(clamp(v,lo,hi)-lo)/(hi-lo)*hh;i===i0?c.moveTo(X(i),yy):c.lineTo(X(i),yy)}c.stroke()};
+  plot(i=>fsrSum(s.feet[0],i),0,130,0,mx,col.l);plot(i=>fsrSum(s.feet[1],i),0,130,0,mx,col.r);
+  plot(i=>Math.hypot(s.feet[0].ax[i],s.feet[0].ay[i],s.feet[0].az[i])/G,140,80,0,4,col.a);
+  plot(i=>s.feet[0].gy[i],230,70,-5,5,col.m);
+  c.fillStyle=col.m;c.fillText('하중',4,12);c.fillText('|a| 0–4 g',4,152);c.fillText('피치 ±5 rad/s',4,242);
+  P.ev.forEach((arr,j)=>{c.strokeStyle=j?col.r:col.l;c.globalAlpha=.45;arr.forEach(i=>{if(i>=i0&&i<=i1){c.beginPath();c.moveTo(X(i)+.5,0);c.lineTo(X(i)+.5,130);c.stroke()}});c.globalAlpha=1});
+  const vals=s.feet.map(F=>SPOS.map((_,q)=>F.fsr[q][i1]/1023));
+  $('#l-insoles').innerHTML=insole(vals[0],0,1.3,'왼발')+insole(vals[1],1,1.3,'오른발');}
+function liveMetrics(){const v=P.t>8?analyzeV2(P.sim,2,Math.min(P.t,P.fallT??1e9)):null;
+  $('#l-metrics').innerHTML=v?`<div><b>${v.steps}</b><span>걸음</span></div><div><b>${fmt(v.cadence,0)}</b><span>보/분</span></div><div><b>${fmt(v.L,2)}</b><span>보폭 m</span></div><div><b>${fmt(v.speed,2)}</b><span>속도 m/s</span></div><div><b>${fmt(v.si)}</b><span>좌우 SI %</span></div><div><b>${fmt(v.cv)}</b><span>리듬 변동 %</span></div>`:`<div><b>…</b><span>8초 뒤 첫 계산</span></div>`;
+  $('#h-live').textContent=v?`${v.steps}걸음 · ${fmt(v.cadence,0)}보/분 · ${fmt(v.speed,2)} m/s`:'측정 중…';}
+function liveLoop(ts){const home=!$('[data-pane="home"]').hidden,walk=!$('[data-pane="walk"]').hidden;
+  if(home||walk){if(P.kid!==cur)liveInit();if(P.last==null)P.last=ts;const dt=Math.min(.1,(ts-P.last)/1000)*P.speed;P.last=ts;
+    if(P.play){P.t+=dt;if(P.t>=P.sim.dur-.05)liveInit();
+      const target=Math.min(P.sim.N-1,Math.floor(P.t*FS));for(;P.idx<=target;P.idx++)fallStep(P.idx);
+      if(P.t-P.metT>1){P.metT=P.t;liveMetrics()}}
+    if(home)drawFootprints($('#h-foot'),230);
+    if(walk){drawFootprints($('#w-foot'),260);drawTimeline($('#w-tl'),92);drawStream();}
+  }else P.last=null;requestAnimationFrame(liveLoop)}
+$('#l-play').onclick=()=>{P.play=!P.play;$('#l-play').textContent=P.play?'일시정지':'재생'};
+$('#w-speed').onclick=()=>{P.speed=P.speed===1?0.5:P.speed===0.5?2:1;$('#w-speed').textContent=P.speed+'× 속도'};
+$('#l-reset').onclick=()=>liveInit();
+$('#l-fall').onclick=()=>{if(P.fallT!=null)return;const ft=P.t+0.4;P.fallT=ft;P.sim=simulate(P.p,Math.max(60,ft+12),P.k.seed,ft);
+  const keep=P.idx,cam=P.cam;liveResetDet();P.idx=keep;P.cam=cam;logL('넘어짐 상황 재생 (0.4초 뒤)');};
+
+/* ---------- tabs ---------- */
+const TABS=['home','walk','report','growth','algo','verify'];
+let tab=store.get('tab','home');if(!TABS.includes(tab))tab='home';const hh=location.hash.slice(1);if(TABS.includes(hh))tab=hh;
+function showTab(t){tab=t;store.set('tab',t);$$('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));$$('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==t);
+  $('#kids').hidden=(t==='algo'||t==='verify');renderTab();}
+function renderTab(){if(tab==='home')renderHome();if(tab==='report')renderReport();if(tab==='growth')renderGrowth();if(tab==='algo')renderAlgo();if(tab==='verify')renderVerify();}
+$$('nav.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function renderAll(){renderKids();renderTab();}
+$('#today').textContent='기준일 2026-09-28 · 아이 4명은 예시 데이터';
+renderKids();showTab(tab);requestAnimationFrame(liveLoop);
+
+</script>
+</body>
+</html>
